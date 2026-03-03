@@ -1,0 +1,1748 @@
+{
+  "info": {
+    "_postman_id": "desa-ku-full-api",
+    "name": "Desa Ku - Full API Collection",
+    "description": "Complete API collection for Desa Ku System - Testing all modules from Step 1-4",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🏠 Setup & Health",
+      "item": [
+        {
+          "name": "✅ Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Check if server is running"
+          },
+          "response": []
+        },
+        {
+          "name": "📚 API Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/docs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "docs"]
+            },
+            "description": "Get all API endpoints documentation"
+          },
+          "response": []
+        },
+        {
+          "name": "🏠 Root Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "👑 Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"Admin123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login sebagai administrator"
+          },
+          "response": []
+        },
+        {
+          "name": "👨‍👩‍👧‍👦 Register Kepala Keluarga",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nik\": \"3275010101010001\",\n    \"nama_lengkap\": \"Ahmad Susanto\",\n    \"username\": \"ahmads\",\n    \"password\": \"Password123!\",\n    \"jenis_kelamin\": \"L\",\n    \"tempat_lahir\": \"Jakarta\",\n    \"tanggal_lahir\": \"1980-01-01\",\n    \"agama\": \"ISLAM\",\n    \"pekerjaan\": \"Wiraswasta\",\n    \"status_perkawinan\": \"KAWIN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Registrasi kepala keluarga baru"
+          },
+          "response": []
+        },
+        {
+          "name": "👤 Get Profile (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Get profile dengan token admin"
+          },
+          "response": []
+        },
+        {
+          "name": "👤 Get Profile (Kepala Keluarga)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✏️ Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"telepon\": \"081234567890\",\n    \"pekerjaan\": \"Pedagang\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🔄 Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "refresh"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🔐 Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"current_password\": \"Password123!\",\n    \"new_password\": \"NewPassword123!\",\n    \"confirm_password\": \"NewPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "change-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🚪 Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 User Management (Admin Only)",
+      "item": [
+        {
+          "name": "📋 Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🔍 Search Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users?search=ahmad&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "ahmad"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "👤 Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "➕ Create User (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nik\": \"3275010101010002\",\n    \"nama_lengkap\": \"Siti Nurhaliza\",\n    \"username\": \"sitinu\",\n    \"email\": \"siti@example.com\",\n    \"password\": \"Password123!\",\n    \"role_id\": 2,\n    \"jenis_kelamin\": \"P\",\n    \"tempat_lahir\": \"Bandung\",\n    \"tanggal_lahir\": \"1990-08-20\",\n    \"agama\": \"ISLAM\",\n    \"pekerjaan\": \"Ibu Rumah Tangga\",\n    \"status_perkawinan\": \"KAWIN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✏️ Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"telepon\": \"081234567891\",\n    \"email\": \"updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Verify User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verify/{{new_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "verify", "{{new_user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🏠 Update User Address",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"dusun_id\": 1,\n    \"rw_id\": 1,\n    \"rt_id\": 1,\n    \"alamat_lengkap\": \"Jl. Mawar No. 10\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{kk_user_id}}/address",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{kk_user_id}}", "address"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📊 User Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "statistics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🗑️ Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📍 Wilayah Management (Admin Only)",
+      "item": [
+        {
+          "name": "🏘️ Get All Dusun",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/dusun",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "dusun"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "➕ Create Dusun",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"kode_dusun\": \"D003\",\n    \"nama_dusun\": \"Dusun Mekar\",\n    \"alamat\": \"Jl. Mekar Sari No. 10\",\n    \"kepala_dusun\": \"Bapak Junaedi\",\n    \"telepon\": \"08123456789\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/dusun",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "dusun"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "👀 Get Dusun by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/dusun/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "dusun", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✏️ Update Dusun",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"kepala_dusun\": \"Bapak Junaedi Updated\",\n    \"telepon\": \"08123456780\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/dusun/{{dusun_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "dusun", "{{dusun_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📋 Get RW by Dusun",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/dusun/1/rw",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "dusun", "1", "rw"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "➕ Create RW",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"dusun_id\": 1,\n    \"nomor_rw\": \"03\",\n    \"ketua_rw\": \"Bapak Surya\",\n    \"telepon\": \"08123456792\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/rw",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "rw"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📋 Get RT by RW",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/rw/1/rt",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "rw", "1", "rt"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "➕ Create RT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rw_id\": 1,\n    \"nomor_rt\": \"03\",\n    \"ketua_rt\": \"Bapak Rudi\",\n    \"telepon\": \"08123456793\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/rt",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "rt"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🗺️ Get Wilayah Hierarchy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/hierarchy",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "hierarchy"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🏠 Get KK by Wilayah",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/kk?dusun_id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "kk"],
+              "query": [
+                {
+                  "key": "dusun_id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📊 Wilayah Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "statistics"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👨‍👩‍👧‍👦 Anggota Keluarga",
+      "item": [
+        {
+          "name": "📋 Get Anggota (Own Family)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📋 Get Anggota (Admin View)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga?kepala_keluarga_id={{kk_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga"],
+              "query": [
+                {
+                  "key": "kepala_keluarga_id",
+                  "value": "{{kk_user_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🔍 Search Anggota",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga/search?q=ahmad",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "ahmad"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "➕ Create Anggota Keluarga",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nik\": \"3275010101010003\",\n    \"nama_lengkap\": \"Rina Susanti\",\n    \"hubungan\": \"ISTRI\",\n    \"jenis_kelamin\": \"P\",\n    \"tempat_lahir\": \"Jakarta\",\n    \"tanggal_lahir\": \"1985-03-15\",\n    \"agama\": \"ISLAM\",\n    \"pendidikan_terakhir\": \"S1\",\n    \"pekerjaan\": \"Guru\",\n    \"status_perkawinan\": \"KAWIN\",\n    \"status_tinggal\": \"TINGGAL\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "👀 Get Anggota by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga/{{anggota_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga", "{{anggota_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✏️ Update Anggota",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"pekerjaan\": \"Pengusaha\",\n    \"pendidikan_terakhir\": \"S2\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga/{{anggota_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga", "{{anggota_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📊 Keluarga Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga", "stats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🗑️ Delete Anggota",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/anggota-keluarga/{{anggota_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "anggota-keluarga", "{{anggota_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💰 Bansos Management",
+      "item": [
+        {
+          "name": "📋 Get All Bansos (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bansos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📋 Get Active Bansos (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/bansos/active",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "active"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "➕ Create Bansos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"kode_bansos\": \"BLT-2024-TEST\",\n    \"nama_bansos\": \"Bantuan Langsung Tunai Test\",\n    \"jenis_bansos\": \"TUNAI\",\n    \"kategori\": \"TUNAI\",\n    \"deskripsi\": \"Bantuan langsung tunai untuk keluarga kurang mampu\",\n    \"penerima_manfaat\": \"Keluarga dengan penghasilan < Rp 2.000.000/bulan\",\n    \"jumlah_nominal\": 500000,\n    \"kuota\": 100,\n    \"tanggal_mulai\": \"2024-01-01\",\n    \"tanggal_selesai\": \"2024-12-31\",\n    \"status\": \"AKTIF\",\n    \"prioritas\": \"TINGGI\",\n    \"kuota_wilayah\": [\n        {\"dusun_id\": 1, \"kuota\": 60},\n        {\"dusun_id\": 2, \"kuota\": 40}\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bansos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "👀 Get Bansos by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bansos/{{bansos_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "{{bansos_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Check Eligibility",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bansos/{{bansos_id}}/eligibility",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "{{bansos_id}}", "eligibility"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✏️ Update Bansos",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nama_bansos\": \"Bantuan Langsung Tunai Updated\",\n    \"jumlah_nominal\": 600000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bansos/{{bansos_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "{{bansos_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🔄 Update Bansos Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"SELESAI\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bansos/{{bansos_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "{{bansos_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📤 Upload Dokumen Panduan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "dokumen_panduan",
+                  "type": "file",
+                  "src": "/path/to/test.pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bansos/{{bansos_id}}/upload-panduan",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "{{bansos_id}}", "upload-panduan"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📊 Bansos Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bansos/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "statistics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "🗑️ Delete Bansos (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bansos/{{bansos_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "{{bansos_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "↩️ Restore Bansos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bansos/{{bansos_id}}/restore",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bansos", "{{bansos_id}}", "restore"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Pengajuan Bansos",
+      "item": [
+        {
+          "name": "📋 Get All Pengajuan (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📋 Get My Pengajuan (Kepala Keluarga)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/my",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "my"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "➕ Create Pengajuan (With Files)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "bansos_id",
+                  "value": "{{bansos_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "alasan_pengajuan",
+                  "value": "Membutuhkan bantuan untuk biaya pendidikan anak dan kebutuhan sehari-hari",
+                  "type": "text"
+                },
+                {
+                  "key": "dokumen_ktp",
+                  "type": "file",
+                  "src": "/path/to/ktp.pdf"
+                },
+                {
+                  "key": "dokumen_kk",
+                  "type": "file",
+                  "src": "/path/to/kk.pdf"
+                },
+                {
+                  "key": "dokumen_surat_permohonan",
+                  "type": "file",
+                  "src": "/path/to/surat.pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "👀 Get Pengajuan by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/{{pengajuan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "{{pengajuan_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update Pengajuan Status (Verifikasi)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"DITERIMA\",\n    \"keterangan\": \"Pengajuan memenuhi semua persyaratan\",\n    \"catatan_admin\": \"Data lengkap dan valid\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/{{pengajuan_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "{{pengajuan_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "⭐ Add Rating & Testimoni",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"testimoni\": \"Proses pengajuan sangat mudah dan transparan. Bantuan tepat waktu dan sangat membantu keluarga kami. Terima kasih pemerintah desa!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/{{pengajuan_id}}/rating",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "{{pengajuan_id}}", "rating"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📨 Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/notifications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "notifications"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📬 Mark Notification as Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/notifications/{{notification_id}}/read",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "notifications", "{{notification_id}}", "read"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📊 Pengajuan Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "statistics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "📤 Export Pengajuan Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"format\": \"excel\",\n    \"status\": \"DITERIMA\",\n    \"tanggal_mulai\": \"2024-01-01\",\n    \"tanggal_selesai\": \"2024-12-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pengajuan-bansos/export",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pengajuan-bansos", "export"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🚫 Test Forbidden Access",
+      "item": [
+        {
+          "name": "❌ Kepala Keluarga Try Admin Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Kepala Keluarga Try Wilayah Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kk_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wilayah/dusun",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wilayah", "dusun"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ No Token Access",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Invalid Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token_123"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Test Data Flow Sequences",
+      "item": [
+        {
+          "name": "🔢 Sequence 1: Full User Registration Flow",
+          "item": [
+            {
+              "name": "1. Register New KK",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nik\": \"3275{{$timestamp}}\",\n    \"nama_lengkap\": \"Test User {{$randomFirstName}}\",\n    \"username\": \"testuser{{$randomInt}}\",\n    \"password\": \"Password123!\",\n    \"jenis_kelamin\": \"L\",\n    \"tempat_lahir\": \"Test City\",\n    \"tanggal_lahir\": \"1990-01-01\",\n    \"agama\": \"ISLAM\",\n    \"pekerjaan\": \"Test Job\",\n    \"status_perkawinan\": \"BELUM_KAWIN\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/register",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "register"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2. Admin Verify User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/verify/{{new_user_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "verify", "{{new_user_id}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "3. Login as New User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"testuser{{$randomInt}}\",\n    \"password\": \"Password123!\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "login"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "🔢 Sequence 2: Full Bansos Flow",
+          "item": [
+            {
+              "name": "1. Create Bansos (Admin)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"kode_bansos\": \"TEST-FLOW-{{$timestamp}}\",\n    \"nama_bansos\": \"Bansos Test Flow\",\n    \"jenis_bansos\": \"TUNAI\",\n    \"deskripsi\": \"Testing full bansos flow\",\n    \"jumlah_nominal\": 300000,\n    \"kuota\": 10,\n    \"tanggal_mulai\": \"2024-01-01\",\n    \"tanggal_selesai\": \"2024-12-31\",\n    \"status\": \"AKTIF\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/bansos",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bansos"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "2. Check Eligibility (KK)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kk_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/bansos/{{bansos_id}}/eligibility",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bansos", "{{bansos_id}}", "eligibility"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "3. Apply for Bansos (KK)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kk_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "bansos_id",
+                      "value": "{{bansos_id}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "alasan_pengajuan",
+                      "value": "Testing pengajuan flow",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/pengajuan-bansos",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "pengajuan-bansos"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "4. Verify Pengajuan (Admin)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"status\": \"DITERIMA\",\n    \"keterangan\": \"Test verification\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/pengajuan-bansos/{{pengajuan_id}}/status",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "pengajuan-bansos", "{{pengajuan_id}}", "status"]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Basic test for successful response",
+          "pm.test(\"Status code is 2xx\", function () {",
+          "    pm.response.to.be.success;",
+          "});",
+          "",
+          "// Test for standard response format",
+          "pm.test(\"Response has success field\", function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property(\"success\");",
+          "    pm.expect(jsonData).to.have.property(\"message\");",
+          "    pm.expect(jsonData).to.have.property(\"timestamp\");",
+          "});",
+          "",
+          "// Save tokens from login responses",
+          "if (pm.response.code === 200 && pm.request.url.path.includes(\"/auth/login\")) {",
+          "    const responseData = pm.response.json();",
+          "    if (responseData.data && responseData.data.access_token) {",
+          "        // Determine user type based on username",
+          "        const requestBody = JSON.parse(pm.request.body.raw);",
+          "        const username = requestBody.username;",
+          "        ",
+          "        if (username === \"admin\") {",
+          "            pm.environment.set(\"admin_token\", responseData.data.access_token);",
+          "            console.log(\"Admin token saved\");",
+          "        } else {",
+          "            pm.environment.set(\"kk_token\", responseData.data.access_token);",
+          "            console.log(\"KK token saved\");",
+          "            ",
+          "            // Save KK user ID",
+          "            if (responseData.data.user && responseData.data.user.id) {",
+          "                pm.environment.set(\"kk_user_id\", responseData.data.user.id);",
+          "            }",
+          "        }",
+          "    }",
+          "}",
+          "",
+          "// Save IDs from creation responses",
+          "if (pm.response.code === 200 || pm.response.code === 201) {",
+          "    const responseData = pm.response.json();",
+          "    ",
+          "    // Save user ID from register",
+          "    if (pm.request.url.path.includes(\"/auth/register\") && responseData.data.user) {",
+          "        pm.environment.set(\"new_user_id\", responseData.data.user.id);",
+          "    }",
+          "    ",
+          "    // Save bansos ID",
+          "    if (pm.request.url.path.includes(\"/bansos\") && pm.request.method === \"POST\" && responseData.data.bansos) {",
+          "        pm.environment.set(\"bansos_id\", responseData.data.bansos.id);",
+          "    }",
+          "    ",
+          "    // Save pengajuan ID",
+          "    if (pm.request.url.path.includes(\"/pengajuan-bansos\") && pm.request.method === \"POST\" && responseData.data.pengajuan) {",
+          "        pm.environment.set(\"pengajuan_id\", responseData.data.pengajuan.id);",
+          "    }",
+          "    ",
+          "    // Save anggota ID",
+          "    if (pm.request.url.path.includes(\"/anggota-keluarga\") && pm.request.method === \"POST\" && responseData.data.anggota) {",
+          "        pm.environment.set(\"anggota_id\", responseData.data.anggota.id);",
+          "    }",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Generate random data for testing",
+          "const timestamp = Date.now();",
+          "pm.variables.set(\"timestamp\", timestamp);",
+          "pm.variables.set(\"randomInt\", Math.floor(Math.random() * 10000));",
+          "pm.variables.set(\"randomFirstName\", [\"Ahmad\", \"Budi\", \"Candra\", \"Dedi\", \"Eko\", \"Fajar\", \"Guntur\", \"Hadi\", \"Irfan\", \"Joko\"][Math.floor(Math.random() * 10)]);"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "kk_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": "3"
+    },
+    {
+      "key": "kk_user_id",
+      "value": "3"
+    },
+    {
+      "key": "new_user_id",
+      "value": ""
+    },
+    {
+      "key": "dusun_id",
+      "value": "1"
+    },
+    {
+      "key": "anggota_id",
+      "value": ""
+    },
+    {
+      "key": "bansos_id",
+      "value": ""
+    },
+    {
+      "key": "pengajuan_id",
+      "value": ""
+    },
+    {
+      "key": "notification_id",
+      "value": ""
+    }
+  ],
+  "auth": null
+}
