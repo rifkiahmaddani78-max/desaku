@@ -160,48 +160,6 @@
             </div>
           </div>
 
-          <!-- Informasi Wilayah (Read-only untuk edit) -->
-          <div v-if="isEdit">
-            <h3 class="text-lg font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">
-              Statistik Wilayah
-            </h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-xs text-gray-500 mb-1">Jumlah RW</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ form.jumlah_rw || 0 }}</p>
-              </div>
-
-              <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-xs text-gray-500 mb-1">Jumlah RT</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ form.jumlah_rt || 0 }}</p>
-              </div>
-
-              <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-xs text-gray-500 mb-1">Jumlah KK</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ form.jumlah_kk || 0 }}</p>
-              </div>
-            </div>
-
-            <div class="mt-4 flex justify-end">
-              <Button
-                variant="outline"
-                size="sm"
-                @click="router.push(`/admin/dusun/${route.params.id}/rw`)"
-              >
-                <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-                Kelola RW/RT
-              </Button>
-            </div>
-          </div>
-
           <!-- Submit Error -->
           <div v-if="submitError" class="rounded-md bg-red-50 p-4">
             <div class="flex">

@@ -135,7 +135,7 @@ const navigateToDashboard = () => {
 }
 
 const openHelp = () => {
-  window.open('/help', '_blank')
+  window.open('/help')
 }
 
 const handleLogout = async () => {

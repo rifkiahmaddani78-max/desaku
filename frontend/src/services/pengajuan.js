@@ -1,7 +1,14 @@
 import api from './api'
 
 export const pengajuanService = {
-  // Get all pengajuan - Admin
+  async getStatistics() {
+    try {
+      const response = await api.get('/pengajuan-bansos/statistics')
+      return response.data
+    } catch (error) {
+      throw error.response?.data || error
+    }
+  },
 
   // Get user's pengajuan list
   async getMyPengajuan() {
@@ -13,13 +20,12 @@ export const pengajuanService = {
     }
   },
 
-  // Create new pengajuan
-  async createPengajuan(payload) {
+  async createPengajuanBansos(payload) {
     try {
-      const response = await api.post('/pengajuan', payload)
+      const response = await api.post('/pengajuan-bansos', payload)
       return response.data
     } catch (error) {
-      throw error.response?.data || error
+      throw error.response?.data || { message: 'Gagal mengajukan bansos' }
     }
   },
 
@@ -38,15 +44,6 @@ export const pengajuanService = {
       return res.data
     } catch (error) {
       throw error.response?.data || { message: 'Gagal memperbarui status' }
-    }
-  },
-
-  async cancelPengajuan(id) {
-    try {
-      const response = await api.put(`/pengajuan-bansos/${id}/batal`)
-      return response.data
-    } catch (error) {
-      throw error.response?.data || error
     }
   },
 

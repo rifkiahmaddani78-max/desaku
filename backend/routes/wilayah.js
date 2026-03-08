@@ -9,7 +9,7 @@ const errorHandler = require('../middlewares/errorHandler');
 router.get(
   '/dusun',
   authMiddleware.authenticate,
-  roleMiddleware.requireAdmin,
+  // roleMiddleware.requireAdmin,
   errorHandler.asyncHandler(wilayahController.getAllDusun)
 );
 
@@ -45,7 +45,7 @@ router.delete(
 router.get(
   '/dusun/:dusunId/rw',
   authMiddleware.authenticate,
-  roleMiddleware.requireAdmin,
+  // roleMiddleware.requireAdmin,
   errorHandler.asyncHandler(wilayahController.getRwByDusun)
 );
 
@@ -74,7 +74,7 @@ router.delete(
 router.get(
   '/rw/:rwId/rt',
   authMiddleware.authenticate,
-  roleMiddleware.requireAdmin,
+  // roleMiddleware.requireAdmin,
   errorHandler.asyncHandler(wilayahController.getRtByRw)
 );
 

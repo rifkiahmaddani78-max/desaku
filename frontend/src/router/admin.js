@@ -13,7 +13,7 @@ import BansosPengajuanDetail from '@/views/admin/BansosPengajuanDetail.vue'
 import DusunDaftar from '@/views/admin/DusunDaftar.vue'
 import DusunForm from '@/views/admin/DusunForm.vue'
 import DusunDetail from '@/views/admin/DusunDetail.vue'
-import KepalaKeluargaEditAlamat from '@/views/admin/KepalaKeluargaEditAlamat.vue'
+import Profil from '@/views/auth/Profil.vue'
 
 export default [
   {
@@ -66,15 +66,6 @@ export default [
         path: '/admin/kepala-keluarga/:id/edit',
         name: 'EditKepalaKeluarga',
         component: EditKepalaKeluarga,
-        mate: {
-          title: 'Edit Alamat Kepala Keluarga - Desa Ku',
-        },
-      },
-      // Kepala Keluarga - Edit Alamat
-      {
-        path: '/admin/kepala-keluarga/:id/edit-alamat',
-        name: 'EditAlamatKepalaKeluarga',
-        component: KepalaKeluargaEditAlamat,
         mate: {
           title: 'Edit Alamat Kepala Keluarga - Desa Ku',
         },
@@ -167,6 +158,15 @@ export default [
         component: DusunDetail,
         mate: {
           title: 'Dusun Detail - Desa Ku',
+        },
+      },
+      // Profile
+      {
+        path: '/admin/profile',
+        name: 'ProfileAdmin',
+        component: Profil,
+        mate: {
+          title: 'Profile - Desa Ku',
         },
       },
     ],

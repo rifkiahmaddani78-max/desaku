@@ -54,9 +54,7 @@ class UserService {
       }
 
       // Check if username already exists
-      const usernameExists = await userRepository.usernameExists(
-        userData.username
-      );
+      const usernameExists = await userRepository.usernameExists(userData.username);
       if (usernameExists) {
         throw errorHandler.createError('Username sudah digunakan', 400);
       }
@@ -100,9 +98,7 @@ class UserService {
       const { password_hash, ...userWithoutPassword } = createdUser;
 
       // Log the creation
-      logger.info(
-        `User ${createdUser.id} created by admin ${createdByAdminId}`
-      );
+      logger.info(`User ${createdUser.id} created by admin ${createdByAdminId}`);
 
       return {
         user: userWithoutPassword,
@@ -128,10 +124,7 @@ class UserService {
 
       // Check if username exists (if being updated)
       if (updateData.username) {
-        const usernameExists = await userRepository.usernameExists(
-          updateData.username,
-          userId
-        );
+        const usernameExists = await userRepository.usernameExists(updateData.username, userId);
         if (usernameExists) {
           throw errorHandler.createError('Username sudah digunakan', 400);
         }
@@ -139,10 +132,7 @@ class UserService {
 
       // Check if email exists (if being updated)
       if (updateData.email) {
-        const emailExists = await userRepository.emailExists(
-          updateData.email,
-          userId
-        );
+        const emailExists = await userRepository.emailExists(updateData.email, userId);
         if (emailExists) {
           throw errorHandler.createError('Email sudah terdaftar', 400);
         }
@@ -150,10 +140,7 @@ class UserService {
 
       // Check if NIK exists (if being updated)
       if (updateData.nik) {
-        const nikExists = await userRepository.nikExists(
-          updateData.nik,
-          userId
-        );
+        const nikExists = await userRepository.nikExists(updateData.nik, userId);
         if (nikExists) {
           throw errorHandler.createError('NIK sudah terdaftar', 400);
         }
@@ -167,8 +154,18 @@ class UserService {
         }
       }
 
+      // 🔥 ===== BAGIAN PENTING (FILTER PASSWORD) =====
+      const { password, ...otherFields } = updateData;
+
+      const finalUpdateData = { ...otherFields };
+
+      if (password) {
+        finalUpdateData.password_hash = await authUtils.hashPassword(password);
+      }
+      // 🔥 ===========================================
+
       // Update user
-      const updatedUser = await userRepository.update(userId, updateData);
+      const updatedUser = await userRepository.update(userId, finalUpdateData);
 
       // Remove password hash from response
       const { password_hash, ...userWithoutPassword } = updatedUser;
@@ -196,10 +193,7 @@ class UserService {
 
       // Cannot delete self
       if (userId === deletedByAdminId) {
-        throw errorHandler.createError(
-          'Tidak dapat menghapus akun sendiri',
-          400
-        );
+        throw errorHandler.createError('Tidak dapat menghapus akun sendiri', 400);
       }
 
       // Delete user (cascade will handle related records)
@@ -232,17 +226,11 @@ class UserService {
 
       // Verify required wilayah data exists
       if (!addressData.dusun_id || !addressData.rw_id || !addressData.rt_id) {
-        throw errorHandler.createError(
-          'Data dusun, RW, dan RT diperlukan',
-          400
-        );
+        throw errorHandler.createError('Data dusun, RW, dan RT diperlukan', 400);
       }
 
       // Update or create address
-      const updatedAddress = await alamatRepository.upsertAlamat(
-        userId,
-        addressData
-      );
+      const updatedAddress = await alamatRepository.upsertAlamat(userId, addressData);
 
       return {
         address: updatedAddress,
@@ -292,8 +280,7 @@ class UserService {
           total: totalCounts.total,
           verified: totalCounts.verified,
           unverified: totalCounts.unverified,
-          admin:
-            totalCounts.total - totalCounts.verified - totalCounts.unverified, // Simplified
+          admin: totalCounts.total - totalCounts.verified - totalCounts.unverified, // Simplified
           dailyRegistrations: results,
         },
       };

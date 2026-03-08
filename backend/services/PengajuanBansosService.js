@@ -115,35 +115,43 @@ class PengajuanBansosService {
         kepalaKeluargaId
       );
 
-      if (existing) {
-        if (existing.status === 'DITOLAK') {
-          // Reset jadi pengajuan baru
-          await pengajuanBansosRepository.update(existing.id, {
-            status: 'MENUNGGU',
-            alasan_pengajuan,
-            ...otherData,
-          });
+      // if (existing) {
+      //   if (existing.status === 'DITOLAK') {
+      //     // Reset jadi pengajuan baru
+      //     await pengajuanBansosRepository.update(existing.id, {
+      //       status: 'MENUNGGU',
+      //       alasan_pengajuan,
+      //       ...otherData,
+      //     });
 
-          await pengajuanBansosRepository.createLog(
-            existing.id,
-            kepalaKeluargaId,
-            'PENGAJUAN_ULANG',
-            'Pengajuan ulang setelah ditolak',
-            { old_status: 'DITOLAK', new_status: 'MENUNGGU' }
-          );
+      //     await pengajuanBansosRepository.createLog(
+      //       existing.id,
+      //       kepalaKeluargaId,
+      //       'PENGAJUAN_ULANG',
+      //       'Pengajuan ulang setelah ditolak',
+      //       { old_status: 'DITOLAK', new_status: 'MENUNGGU' }
+      //     );
 
-          await connection.commit();
+      //     await connection.commit();
 
-          return {
-            pengajuan: await this.getPengajuanById(existing.id),
-            message: 'Pengajuan ulang berhasil dibuat',
-          };
-        }
+      //     return {
+      //       pengajuan: await this.getPengajuanById(existing.id),
+      //       message: 'Pengajuan ulang berhasil dibuat',
+      //     };
+      //   }
 
-        throw errorHandler.createError('Anda sudah mengajukan bansos ini', 400);
-      }
+      //   throw errorHandler.createError('Anda sudah mengajukan bansos ini', 400);
+      // }
 
       // Check eligibility and quota
+
+      if (existing) {
+        throw errorHandler.createError(
+          'Anda sudah pernah mengajukan bansos ini dan tidak dapat mengajukan kembali',
+          400
+        );
+      }
+
       const eligibility = await bansosRepository.checkKuotaForUser(bansos_id, kepalaKeluargaId);
       if (!eligibility) {
         throw errorHandler.createError('Tidak ada kuota untuk wilayah Anda', 400);

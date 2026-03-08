@@ -4,31 +4,6 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <!-- Header dengan desain modern -->
       <div class="mb-8">
-        <!-- Breadcrumb dengan desain lebih elegan -->
-        <nav class="flex items-center text-sm mb-4">
-          <button
-            @click="$router.back()"
-            class="inline-flex items-center text-gray-500 hover:text-primary-600 transition-all duration-200 group"
-          >
-            <svg
-              class="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform duration-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            <span>Kembali</span>
-          </button>
-          <span class="mx-2 text-gray-400">/</span>
-          <span class="text-gray-600">Detail Dusun</span>
-        </nav>
-
         <!-- Header dengan action buttons yang lebih modern -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div class="flex items-center space-x-3">
@@ -851,8 +826,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { dusunService } from '@/services/dusun'
-// import { rwService } from '@/services/rw'
-// import { rtService } from '@/services/rt'
+import { rwService } from '@/services/rw'
+import { rtService } from '@/services/rt'
 import Card from '@/components/ui/Card.vue'
 import Button from '@/components/ui/Button.vue'
 import Badge from '@/components/ui/Badge.vue'
@@ -1044,9 +1019,9 @@ const submitRWForm = async () => {
     let response
     if (modalMode.value === 'tambah') {
       payload.dusun_id = parseInt(route.params.id)
-      response = await dusunService.createRw(payload)
+      response = await rwService.createRw(payload)
     } else {
-      response = await dusunService.updateRw(rwForm.value.id, payload)
+      response = await rwService.updateRw(rwForm.value.id, payload)
     }
 
     if (response.success) {
@@ -1080,7 +1055,7 @@ const confirmDeleteRW = async (rw) => {
   }
 
   try {
-    await dusunService.deleteRw(rw.id)
+    await rwService.deleteRw(rw.id)
     alert('RW berhasil dihapus')
     await fetchDetail()
   } catch (err) {
@@ -1174,9 +1149,9 @@ const submitRTForm = async () => {
     let response
     if (rtModalMode.value === 'tambah') {
       payload.rw_id = selectedRw.value.id
-      response = await dusunService.createRt(payload)
+      response = await rtService.createRt(payload)
     } else {
-      response = await dusunService.updateRt(rtForm.value.id, payload)
+      response = await rtService.updateRt(rtForm.value.id, payload)
     }
 
     if (response.success) {
@@ -1206,7 +1181,7 @@ const confirmDeleteRT = async (rt, rw) => {
   }
 
   try {
-    await dusunService.deleteRt(rt.id)
+    await rtService.deleteRt(rt.id)
     alert('RT berhasil dihapus')
     await fetchDetail()
   } catch (err) {

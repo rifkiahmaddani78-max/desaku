@@ -327,13 +327,14 @@
                     id="rw_id"
                     v-model="addressForm.rw_id"
                     class="input-field"
-                    :disabled="!addressForm.dusun_id"
+                    :disabled="!addressForm.dusun_id || rwLoading"
                   >
                     <option value="">Pilih RW</option>
                     <option v-for="rw in rwList" :key="rw.id" :value="rw.id">
                       RW {{ rw.nomor_rw }} {{ rw.ketua_rw ? `- ${rw.ketua_rw}` : '' }}
                     </option>
                   </select>
+                  <div v-if="rwLoading" class="mt-1 text-xs text-gray-500">Memuat data RW...</div>
                 </div>
 
                 <!-- RT -->
@@ -345,13 +346,14 @@
                     id="rt_id"
                     v-model="addressForm.rt_id"
                     class="input-field"
-                    :disabled="!addressForm.rw_id"
+                    :disabled="!addressForm.rw_id || rtLoading"
                   >
                     <option value="">Pilih RT</option>
                     <option v-for="rt in rtList" :key="rt.id" :value="rt.id">
                       RT {{ rt.nomor_rt }} {{ rt.ketua_rt ? `- ${rt.ketua_rt}` : '' }}
                     </option>
                   </select>
+                  <div v-if="rtLoading" class="mt-1 text-xs text-gray-500">Memuat data RT...</div>
                 </div>
               </div>
 
@@ -518,10 +520,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usersService } from '@/services/users'
 import { dusunService } from '@/services/dusun'
+import { rwService } from '@/services/rw'
+import { rtService } from '@/services/rt'
 import Card from '@/components/ui/Card.vue'
 import Button from '@/components/ui/Button.vue'
 import { isValidEmail, isValidNIK } from '@/utils/helpers'
@@ -533,6 +537,7 @@ const id = route.params.id
 // State
 const loading = ref(true)
 const submitting = ref(false)
+const error = ref('')
 const submitError = ref('')
 const showPassword = ref(false)
 const today = ref(new Date().toISOString().split('T')[0])
@@ -541,6 +546,16 @@ const today = ref(new Date().toISOString().split('T')[0])
 const dusunList = ref([])
 const rwList = ref([])
 const rtList = ref([])
+
+// Data asli dari API
+const originalData = ref(null)
+
+// Loading states untuk dropdown
+const rwLoading = ref(false)
+const rtLoading = ref(false)
+
+// Flag untuk menandai apakah sedang dalam proses initial load
+const isInitialLoad = ref(true)
 
 // Form state untuk data utama
 const form = reactive({
@@ -582,31 +597,6 @@ const addressErrors = reactive({
   dusun_id: '',
 })
 
-// Watch for dusun change to load RW
-const onDusunChange = async () => {
-  addressForm.rw_id = ''
-  addressForm.rt_id = ''
-  rwList.value = []
-  rtList.value = []
-
-  if (addressForm.dusun_id) {
-    await loadRwList(addressForm.dusun_id)
-  }
-}
-
-// Watch for RW change to load RT
-watch(
-  () => addressForm.rw_id,
-  async (newRwId) => {
-    addressForm.rt_id = ''
-    rtList.value = []
-
-    if (newRwId) {
-      await loadRtList(newRwId)
-    }
-  },
-)
-
 /* =========================
    LOAD WILAYAH DATA
 ========================= */
@@ -622,72 +612,226 @@ const loadDusunList = async () => {
 }
 
 const loadRwList = async (dusunId) => {
+  if (!dusunId) {
+    rwList.value = []
+    return
+  }
+
+  rwLoading.value = true
   try {
-    const response = await dusunService.getRwList(dusunId)
+    const response = await rwService.getRwList(dusunId)
     if (response.success) {
       rwList.value = response.data || []
+      return true
     }
+    return false
   } catch (err) {
     console.error('Error loading RW:', err)
+    rwList.value = []
+    return false
+  } finally {
+    rwLoading.value = false
   }
 }
 
 const loadRtList = async (rwId) => {
+  if (!rwId) {
+    rtList.value = []
+    return
+  }
+
+  rtLoading.value = true
   try {
-    const response = await dusunService.getRtList(rwId)
+    const response = await rtService.getRtList(rwId)
     if (response.success) {
       rtList.value = response.data || []
+      return true
     }
+    return false
   } catch (err) {
     console.error('Error loading RT:', err)
+    rtList.value = []
+    return false
+  } finally {
+    rtLoading.value = false
   }
 }
 
 /* =========================
-   LOAD DATA DETAIL
+   AUTO-SELECT WATCHERS
 ========================= */
-onMounted(async () => {
+// Watch untuk dusunList - auto select dusun setelah list tersedia
+watch(dusunList, (newList) => {
+  if (newList.length > 0 && originalData.value?.dusun_id) {
+    const dusunExists = newList.some((d) => d.id === originalData.value.dusun_id)
+    if (dusunExists) {
+      addressForm.dusun_id = originalData.value.dusun_id
+    }
+  }
+})
+
+// Watch untuk rwList - auto select rw setelah list tersedia
+watch(rwList, (newList) => {
+  if (
+    newList.length > 0 &&
+    originalData.value?.rw_id &&
+    addressForm.dusun_id === originalData.value.dusun_id
+  ) {
+    const rwExists = newList.some((r) => r.id === originalData.value.rw_id)
+    if (rwExists) {
+      addressForm.rw_id = originalData.value.rw_id
+    }
+  }
+})
+
+// Watch untuk rtList - auto select rt setelah list tersedia
+watch(rtList, (newList) => {
+  if (
+    newList.length > 0 &&
+    originalData.value?.rt_id &&
+    addressForm.rw_id === originalData.value.rw_id
+  ) {
+    const rtExists = newList.some((r) => r.id === originalData.value.rt_id)
+    if (rtExists) {
+      addressForm.rt_id = originalData.value.rt_id
+    }
+  }
+})
+
+// Watch untuk addressForm.dusun_id - load RW ketika dusun berubah
+watch(
+  () => addressForm.dusun_id,
+  async (newDusunId, oldDusunId) => {
+    // Jika ini initial load, jangan reset
+    if (isInitialLoad.value) {
+      return
+    }
+
+    // Reset RW dan RT
+    addressForm.rw_id = ''
+    addressForm.rt_id = ''
+    rtList.value = []
+
+    // Load RW jika dusun dipilih
+    if (newDusunId) {
+      await loadRwList(newDusunId)
+    } else {
+      rwList.value = []
+    }
+  },
+)
+
+// Watch untuk addressForm.rw_id - load RT ketika RW berubah
+watch(
+  () => addressForm.rw_id,
+  async (newRwId, oldRwId) => {
+    // Jika ini initial load, jangan reset
+    if (isInitialLoad.value) {
+      return
+    }
+
+    // Reset RT
+    addressForm.rt_id = ''
+
+    // Load RT jika RW dipilih
+    if (newRwId) {
+      await loadRtList(newRwId)
+    } else {
+      rtList.value = []
+    }
+  },
+)
+
+/* =========================
+   LOAD DATA
+========================= */
+const loadData = async () => {
   try {
     loading.value = true
+    error.value = ''
+    isInitialLoad.value = true
+
+    // 1. Load dusun list dulu
     await loadDusunList()
 
-    const data = await usersService.getDetailKepalaKeluarga(id)
+    // 2. Load data kepala keluarga
+    const response = await usersService.getDetailKepalaKeluarga(id)
+
+    // Simpan data original untuk referensi
+    originalData.value = response
 
     // Map data utama
-    form.id = data.id
-    form.nik = data.nik || ''
-    form.nama_lengkap = data.nama_lengkap || ''
-    form.username = data.username || ''
-    form.email = data.email || ''
-    form.jenis_kelamin = data.jenis_kelamin || 'L'
-    form.tempat_lahir = data.tempat_lahir || ''
-    form.tanggal_lahir = data.tanggal_lahir ? data.tanggal_lahir.split('T')[0] : ''
-    form.agama = data.agama || ''
-    form.pekerjaan = data.pekerjaan || ''
-    form.status_perkawinan = data.status_perkawinan || ''
+    form.id = response.id
+    form.nik = response.nik || ''
+    form.nama_lengkap = response.nama_lengkap || ''
+    form.username = response.username || ''
+    form.email = response.email || ''
+    form.jenis_kelamin = response.jenis_kelamin || 'L'
+    form.tempat_lahir = response.tempat_lahir || ''
+    form.tanggal_lahir = response.tanggal_lahir ? response.tanggal_lahir.split('T')[0] : ''
+    form.agama = response.agama || ''
+    form.pekerjaan = response.pekerjaan || ''
+    form.status_perkawinan = response.status_perkawinan || ''
 
-    // Map data alamat
-    addressForm.alamat_lengkap = data.alamat_lengkap || ''
-    addressForm.dusun_id = data.dusun_id || ''
-    addressForm.rw_id = data.rw_id || ''
-    addressForm.rt_id = data.rt_id || ''
-    addressForm.koordinat_lat = data.koordinat_lat || ''
-    addressForm.koordinat_lng = data.koordinat_lng || ''
+    // Map data alamat (tanpa auto-select dulu)
+    addressForm.alamat_lengkap = response.alamat_lengkap || ''
+    addressForm.koordinat_lat = response.koordinat_lat || ''
+    addressForm.koordinat_lng = response.koordinat_lng || ''
 
-    // Load RW dan RT jika dusun sudah dipilih
-    if (addressForm.dusun_id) {
-      await loadRwList(addressForm.dusun_id)
-      if (addressForm.rw_id) {
-        await loadRtList(addressForm.rw_id)
+    // Set dusun_id (akan trigger watch tapi kita ignore karena isInitialLoad = true)
+    addressForm.dusun_id = response.dusun_id || ''
+
+    // 3. Load RW list jika ada dusun_id
+    if (response.dusun_id) {
+      await loadRwList(response.dusun_id)
+
+      // Set rw_id setelah RW list terload
+      if (response.rw_id) {
+        const rwExists = rwList.value.some((r) => r.id === response.rw_id)
+        if (rwExists) {
+          addressForm.rw_id = response.rw_id
+        }
+      }
+
+      // 4. Load RT list jika ada rw_id
+      if (response.rw_id) {
+        await loadRtList(response.rw_id)
+
+        // Set rt_id setelah RT list terload
+        if (response.rt_id) {
+          const rtExists = rtList.value.some((r) => r.id === response.rt_id)
+          if (rtExists) {
+            addressForm.rt_id = response.rt_id
+          }
+        }
       }
     }
   } catch (err) {
     console.error('Error loading data:', err)
-    submitError.value = err.message || 'Gagal memuat data kepala keluarga'
+    error.value = err.message || 'Gagal memuat data kepala keluarga'
   } finally {
+    // Initial load selesai
+    isInitialLoad.value = false
     loading.value = false
   }
-})
+}
+
+/* =========================
+   HANDLE DUSUN CHANGE
+========================= */
+const onDusunChange = () => {
+  // Reset RW dan RT
+  addressForm.rw_id = ''
+  addressForm.rt_id = ''
+  rtList.value = []
+
+  // Load RW jika dusun dipilih
+  if (addressForm.dusun_id) {
+    loadRwList(addressForm.dusun_id)
+  } else {
+    rwList.value = []
+  }
+}
 
 /* =========================
    VALIDATE FORM
@@ -736,7 +880,12 @@ const validateForm = () => {
   if (form.tanggal_lahir) {
     const birthDate = new Date(form.tanggal_lahir)
     const today = new Date()
-    const age = today.getFullYear() - birthDate.getFullYear()
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const monthDiff = today.getMonth() - birthDate.getMonth()
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--
+    }
 
     if (age < 17) {
       errors.tanggal_lahir = 'Usia minimal 17 tahun'
@@ -780,7 +929,7 @@ const handleSubmit = async () => {
       username: form.username,
       email: form.email || undefined,
       password: form.password || undefined,
-      role_id: 2,
+      role_id: 2, // Role Kepala Keluarga
       jenis_kelamin: form.jenis_kelamin,
       tempat_lahir: form.tempat_lahir || undefined,
       tanggal_lahir: form.tanggal_lahir || undefined,
@@ -807,6 +956,7 @@ const handleSubmit = async () => {
 
     await usersService.updateAddress(id, addressPayload)
 
+    // Show success message
     alert('Data kepala keluarga berhasil diperbarui!')
     router.push(`/admin/kepala-keluarga/${form.id}`)
   } catch (err) {
@@ -823,6 +973,13 @@ const handleSubmit = async () => {
     submitting.value = false
   }
 }
+
+/* =========================
+   LIFECYCLE HOOK
+========================= */
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <style scoped>

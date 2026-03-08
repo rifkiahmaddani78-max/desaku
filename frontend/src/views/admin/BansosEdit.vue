@@ -918,7 +918,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { wilayahService } from '@/services/wilayah'
+import { dusunService } from '@/services/dusun'
 import { bansosService } from '@/services/bansos'
 
 const route = useRoute()
@@ -1043,8 +1043,8 @@ const fetchBansosData = async () => {
 
 const fetchDusunData = async () => {
   try {
-    const response = await wilayahService.getDusun()
-    dusunList.value = response
+    const response = await dusunService.getDusunList()
+    dusunList.value = response.data
   } catch (err) {
     console.error('Error fetching dusun:', err)
   }

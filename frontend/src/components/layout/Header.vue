@@ -57,20 +57,6 @@
 
         <!-- Right section: Search and user menu -->
         <div class="flex items-center space-x-4">
-          <!-- Notifications -->
-          <button
-            type="button"
-            class="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 relative"
-            @click="toggleNotifications"
-          >
-            <span class="sr-only">Lihat notifikasi</span>
-            <BellIcon class="h-6 w-6" />
-            <span
-              v-if="notificationCount > 0"
-              class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"
-            ></span>
-          </button>
-
           <!-- User menu -->
           <UserMenu />
         </div>

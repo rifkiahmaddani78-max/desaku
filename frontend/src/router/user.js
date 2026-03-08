@@ -7,6 +7,7 @@ import Dashboard from '@/views/kepalakeluarga/Dashboard.vue'
 import BansosPegajuan from '@/views/kepalakeluarga/BansosPegajuan.vue'
 import BansosDetail from '@/views/kepalakeluarga/BansosDetail.vue'
 import BansosPengajuanDetail from '@/views/kepalakeluarga/BansosPengajuanDetail.vue'
+import Profil from '@/views/auth/Profil.vue'
 
 export default [
   {
@@ -88,6 +89,15 @@ export default [
         component: BansosPengajuanDetail,
         mate: {
           title: 'Bansos Pengajuan Detail - Desa Ku',
+        },
+      },
+      // Profile
+      {
+        path: '/profile',
+        name: 'ProfileKepalaKeluarga',
+        component: Profil,
+        mate: {
+          title: 'Profile - Desa Ku',
         },
       },
     ],

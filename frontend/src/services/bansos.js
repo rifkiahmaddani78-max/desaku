@@ -1,45 +1,10 @@
 import api from './api'
 
 export const bansosService = {
-  // Ambil statistik wilayah
   async getStatistics() {
     try {
       const response = await api.get('/bansos/statistics')
       return response.data
-    } catch (error) {
-      throw error.response?.data || error
-    }
-  },
-
-  // Ambil jumlah dusun
-  async getTotalBansos() {
-    try {
-      const response = await api.get('/bansos/statistics')
-
-      const stats = response.data?.data
-
-      // if (!stats || typeof stats.total_bansos !== 'number') {
-      //   return 0
-      // }
-
-      return stats.aktif
-    } catch (error) {
-      throw error.response?.data || error
-    }
-  },
-
-  // Ambil bansos ditolak
-  async getBansosTolak() {
-    try {
-      const response = await api.get('/bansos/statistics')
-
-      const stats = response.data?.data
-
-      // if (!stats || typeof stats.total_bansos !== 'number') {
-      //   return 0
-      // }
-
-      return stats.total_ditolak
     } catch (error) {
       throw error.response?.data || error
     }
@@ -110,15 +75,6 @@ export const bansosService = {
       return response.data.data
     } catch (error) {
       throw error.response?.data || { message: 'Gagal mengambil data bansos' }
-    }
-  },
-
-  async createPengajuanBansos(payload) {
-    try {
-      const response = await api.post('/pengajuan-bansos', payload)
-      return response.data
-    } catch (error) {
-      throw error.response?.data || { message: 'Gagal mengajukan bansos' }
     }
   },
 }

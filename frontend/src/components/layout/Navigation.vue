@@ -134,6 +134,8 @@ import {
   DocumentTextIcon,
   ClipboardDocumentListIcon,
   PaperAirplaneIcon,
+  UserCircleIcon,
+  
 } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
@@ -166,7 +168,6 @@ const adminNavigation = [
     icon: CurrencyDollarIcon,
     hasSubmenu: true,
     roles: [ROLES.ADMIN],
-    badge: { variant: 'warning', text: 'New' },
     submenu: [
       {
         name: 'Daftar Bansos',
@@ -177,7 +178,6 @@ const adminNavigation = [
         name: 'Daftar Pengajuan',
         href: '/admin/pengajuan-bansos',
         icon: PaperAirplaneIcon,
-        badge: { variant: 'danger', text: '12' },
       },
     ],
   },
@@ -186,14 +186,13 @@ const adminNavigation = [
     href: '/admin/dusun',
     icon: MapIcon,
     roles: [ROLES.ADMIN],
-    badge: { variant: 'danger', text: '3' },
   },
-  {
-    name: 'Laporan',
-    href: '/admin/laporan',
-    icon: ChartBarIcon,
-    roles: [ROLES.ADMIN],
-  },
+  // {
+  //   name: 'Laporan',
+  //   href: '/admin/laporan',
+  //   icon: ChartBarIcon,
+  //   roles: [ROLES.ADMIN],
+  // },
 ]
 
 // Definisi menu untuk Kepala Keluarga
@@ -225,22 +224,15 @@ const kkNavigation = [
         name: 'Pengajuan Saya',
         href: '/pengajuan-bansos-saya',
         icon: PaperAirplaneIcon,
-        badge: { variant: 'info', text: '2' },
       },
     ],
   },
+
   {
-    name: 'Wilayah',
-    href: '/wilayah',
-    icon: MapIcon,
+    name: 'Profile Saya',
+    href: '/Profile',
+    icon: UserCircleIcon,
     roles: [ROLES.KEPALA_KELUARGA],
-  },
-  {
-    name: 'Notifikasi',
-    href: '/notifikasi',
-    icon: BellIcon,
-    roles: [ROLES.KEPALA_KELUARGA],
-    badge: { variant: 'danger', text: '5' },
   },
 ]
 

@@ -540,6 +540,7 @@ import Card from '@/components/ui/Card.vue'
 import Button from '@/components/ui/Button.vue'
 import Badge from '@/components/ui/Badge.vue'
 import { getInitials, formatCurrency, formatDate, formatDateTime } from '@/utils/helpers'
+import { pengajuanService } from '@/services/pengajuan'
 
 const route = useRoute()
 const router = useRouter()
@@ -648,7 +649,7 @@ const submitPengajuan = async () => {
 
   submitting.value = true
   try {
-    await bansosService.createPengajuanBansos({
+    await pengajuanService.createPengajuanBansos({
       bansos_id: bansosId,
       alasan_pengajuan: alasan.value.trim(),
     })

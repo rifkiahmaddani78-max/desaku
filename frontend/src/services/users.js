@@ -1,29 +1,19 @@
 import api from './api'
 
 export const usersService = {
-  // Statistik (tetap)
   async getStatistics() {
-    const response = await api.get('/users/statistics')
-    return response.data
-  },
-
-  // Total kepala keluarga (tetap)
-  async getTotalKepalaKeluarga() {
-    const response = await api.get('/users/statistics')
-    const dailyStats = response.data?.data?.statistics
-
-    // if (!stats || typeof stats.verified !== 'number') {
-    //   return 0
-    // }
-
-    // return Number(dailyStats.)
-    return dailyStats.verified
+    try {
+      const response = await api.get('/users/statistics')
+      return response.data
+    } catch (error) {
+      throw error.response?.data || error
+    }
   },
 
   async createKepalaKeluarga(payload) {
     const response = await api.post('/users', {
       ...payload,
-      role_id: 2, // kepala_keluarga
+      role_id: 2,
     })
     return response.data
   },

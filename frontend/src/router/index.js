@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import adminRoutes from './admin'
 import userRoutes from './user'
+import BantuanDukungan from '@/views/auth/BantuanDukungan.vue'
 
 // Lazy load
 const Login = () => import('@/views/auth/Login.vue')
@@ -35,6 +36,15 @@ const routes = [
 
   ...userRoutes,
   ...adminRoutes,
+
+  {
+    path: '/help',
+    name: 'Bantuan Dan Dukungan',
+    component: BantuanDukungan,
+    meta: {
+      title: 'Bantuan & Dukungan - Desa Ku',
+    },
+  },
 
   // 404 fallback (lebih aman)
   {

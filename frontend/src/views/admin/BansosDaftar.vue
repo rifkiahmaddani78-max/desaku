@@ -1,42 +1,16 @@
 <template>
   <div>
     <!-- Page Header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-semibold text-gray-900 mb-2">Daftar Bantuan Sosial</h1>
-      <p class="text-sm text-gray-600">Kelola program bantuan sosial yang tersedia di Desa Ku</p>
-    </div>
-
-    <!-- Action Bar -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex-1 max-w-sm">
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              class="h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-          <input
-            v-model="searchQuery"
-            type="search"
-            placeholder="Cari nama atau kode bansos..."
-            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-          />
-        </div>
+    <div class="sm:flex sm:items-center sm:justify-between mb-6 sm:mb-8">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-semibold text-gray-900">Bantuan Sosial</h1>
+        <p class="text-sm text-gray-600 mt-1">
+          Kelola program bantuan sosial yang tersedia di Desa Ku
+        </p>
       </div>
-
-      <div class="ml-4">
+      <div class="mt-4 sm:mt-0">
         <router-link to="/admin/daftar-bansos/tambah">
-          <Button variant="primary" class="flex items-center">
+          <Button variant="primary" class="w-full sm:w-auto">
             <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -48,241 +22,227 @@
             Tambah Bansos
           </Button>
         </router-link>
+      </div>
+    </div>
+
+    <!-- Search & Filter Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+      <div class="relative flex-1 max-w-md">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
+        <input
+          v-model="searchQuery"
+          type="search"
+          placeholder="Cari nama atau kode bansos..."
+          class="block w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow text-sm"
+        />
+      </div>
+
+      <!-- Filter Status -->
+      <div class="flex items-center space-x-2">
+        <span class="text-sm text-gray-500 whitespace-nowrap">Status:</span>
+        <select
+          v-model="filterStatus"
+          class="block w-32 py-2.5 px-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+        >
+          <option value="all">Semua</option>
+          <option value="AKTIF">Aktif</option>
+          <option value="SELESAI">Selesai</option>
+          <option value="DIBATALKAN">Dibatalkan</option>
+        </select>
       </div>
     </div>
 
     <!-- Stats Cards -->
     <div
       v-if="!loading && bansosList.length > 0"
-      class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"
+      class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8"
     >
-      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+      <!-- Total Bansos -->
+      <div class="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 border border-gray-100">
         <div class="flex items-center">
-          <div class="p-2 bg-blue-100 rounded-lg mr-3">
-            <svg
-              class="h-6 w-6 text-blue-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div class="p-2 sm:p-2.5 bg-blue-50 rounded-lg">
+            <GiftIcon class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
           </div>
-          <div>
-            <p class="text-sm text-gray-500">Total Bansos</p>
-            <p class="text-xl font-semibold text-gray-900">{{ bansosList.length }}</p>
+          <div class="ml-3 min-w-0">
+            <p class="text-xs text-gray-500 truncate">Total Program</p>
+            <p class="text-base sm:text-lg font-semibold text-gray-900">{{ bansosList.length }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+      <!-- Aktif -->
+      <div class="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 border border-gray-100">
         <div class="flex items-center">
-          <div class="p-2 bg-green-100 rounded-lg mr-3">
-            <svg
-              class="h-6 w-6 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div class="p-2 sm:p-2.5 bg-green-50 rounded-lg">
+            <CheckBadgeIcon class="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
           </div>
-          <div>
-            <p class="text-sm text-gray-500">Aktif</p>
-            <p class="text-xl font-semibold text-gray-900">{{ activeCount }}</p>
+          <div class="ml-3 min-w-0">
+            <p class="text-xs text-gray-500 truncate">Aktif</p>
+            <p class="text-base sm:text-lg font-semibold text-gray-900">{{ activeCount }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+      <!-- Selesai -->
+      <div class="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 border border-gray-100">
         <div class="flex items-center">
-          <div class="p-2 bg-yellow-100 rounded-lg mr-3">
-            <svg
-              class="h-6 w-6 text-yellow-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div class="p-2 sm:p-2.5 bg-yellow-50 rounded-lg">
+            <CheckCircleIcon class="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600" />
           </div>
-          <div>
-            <p class="text-sm text-gray-500">Selesai</p>
-            <p class="text-xl font-semibold text-gray-900">{{ ongoingCount }}</p>
+          <div class="ml-3 min-w-0">
+            <p class="text-xs text-gray-500 truncate">Selesai</p>
+            <p class="text-base sm:text-lg font-semibold text-gray-900">{{ completedCount }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+      <!-- Dibatalkan -->
+      <div class="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 border border-gray-100">
         <div class="flex items-center">
-          <div class="p-2 bg-red-100 rounded-lg mr-3">
-            <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+          <div class="p-2 sm:p-2.5 bg-red-50 rounded-lg">
+            <XCircleIcon class="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
           </div>
-          <div>
-            <p class="text-sm text-gray-500">Di batalkan</p>
-            <p class="text-xl font-semibold text-gray-900">{{ inactiveCount }}</p>
+          <div class="ml-3 min-w-0">
+            <p class="text-xs text-gray-500 truncate">Dibatalkan</p>
+            <p class="text-base sm:text-lg font-semibold text-gray-900">{{ cancelledCount }}</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="text-center py-12">
-      <div
-        class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
-      ></div>
-      <p class="mt-2 text-sm text-gray-500">Memuat data bansos...</p>
+    <div v-if="loading" class="flex justify-center py-12">
+      <div class="flex items-center space-x-2 text-gray-500">
+        <div
+          class="w-5 h-5 border-2 border-gray-300 border-t-primary-600 rounded-full animate-spin"
+        ></div>
+        <span class="text-sm">Memuat data...</span>
+      </div>
     </div>
 
     <!-- Empty State -->
     <div
       v-else-if="filteredBansos.length === 0"
-      class="text-center py-12 bg-white rounded-lg border border-gray-200"
+      class="text-center py-12 bg-white rounded-xl border border-gray-200"
     >
-      <div class="mx-auto h-12 w-12 text-gray-400">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mx-auto w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+        <GiftIcon class="w-8 h-8 text-gray-400" />
+      </div>
+      <h3 class="text-sm font-medium text-gray-900 mb-1">Tidak ada program bansos</h3>
+      <p class="text-sm text-gray-500 mb-4">
+        {{
+          searchQuery || filterStatus !== 'all'
+            ? 'Tidak ditemukan dengan filter tersebut'
+            : 'Mulai tambah program bansos pertama'
+        }}
+      </p>
+      <router-link
+        to="/admin/daftar-bansos/tambah"
+        class="inline-flex items-center text-sm text-primary-600 hover:text-primary-700 font-medium"
+      >
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            d="M12 4v16m8-8H4"
           />
         </svg>
-      </div>
-      <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada bansos</h3>
-      <p class="mt-1 text-sm text-gray-500">
-        {{
-          searchQuery
-            ? 'Tidak ditemukan bansos dengan pencarian tersebut'
-            : 'Mulai tambah kepala keluarga pertama Anda'
-        }}
-      </p>
-      <div class="mt-6">
-        <router-link to="/admin/daftar-bansos/tambah">
-          <Button variant="primary" class="flex items-center mx-auto">
-            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Tambah Bansos
-          </Button>
-        </router-link>
-      </div>
+        Tambah Bansos
+      </router-link>
     </div>
 
     <!-- Bansos Grid -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       <div
         v-for="item in filteredBansos"
         :key="item.id"
-        class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
+        class="bg-white rounded-lg sm:rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
       >
         <!-- Header with Status -->
-        <div class="p-5 border-b border-gray-200">
-          <div class="flex justify-between items-start mb-3">
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900 line-clamp-1">
+        <div class="p-4 sm:p-5 border-b border-gray-100">
+          <div class="flex items-start justify-between">
+            <div class="min-w-0 flex-1">
+              <h3 class="text-sm sm:text-base font-semibold text-gray-900 truncate">
                 {{ item.nama_bansos }}
               </h3>
-              <p class="text-sm text-gray-500 mt-1">Kode: {{ item.kode_bansos }}</p>
+              <p class="text-xs text-gray-500 mt-1">Kode: {{ item.kode_bansos }}</p>
             </div>
-
-            <!-- Status Badge -->
-            <span
-              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-              :class="{
-                'bg-green-100 text-green-800': item.status === 'AKTIF',
-                'bg-yellow-100 text-yellow-800': item.status === 'SELESAI',
-                'bg-red-100 text-red-800': item.status === 'DIBATALKAN',
-                'bg-blue-100 text-blue-800': item.status === 'DRAFT',
-                'bg-gray-100 text-gray-800': !item.status,
-              }"
+            <Badge
+              :variant="getStatusVariant(item.status)"
+              size="sm"
+              class="ml-2 whitespace-nowrap"
             >
-              {{ item.status || 'DRAFT' }}
-            </span>
+              {{ getStatusText(item.status) }}
+            </Badge>
           </div>
-
-          <p class="text-sm text-gray-600 line-clamp-2">
-            {{ item.deskripsi }}
+          <p class="text-xs sm:text-sm text-gray-600 mt-3 line-clamp-2">
+            {{ item.deskripsi || '-' }}
           </p>
         </div>
 
         <!-- Details -->
-        <div class="p-5">
-          <div class="space-y-3">
-            <!-- Jenis & Kategori -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <p class="text-xs text-gray-500">Jenis</p>
-                <p class="text-sm font-medium text-gray-900">{{ item.jenis_bansos }}</p>
-              </div>
-              <div>
-                <p class="text-xs text-gray-500">Kategori</p>
-                <p class="text-sm font-medium text-gray-900">{{ item.kategori }}</p>
-              </div>
+        <div class="p-4 sm:p-5 space-y-3 sm:space-y-4">
+          <!-- Jenis & Kategori -->
+          <div class="grid grid-cols-2 gap-2 sm:gap-3">
+            <div class="bg-gray-50 p-2 sm:p-3 rounded-lg">
+              <p class="text-xs text-gray-500">Jenis</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-900">
+                {{ item.jenis_bansos || '-' }}
+              </p>
             </div>
-
-            <!-- Nominal or Satuan -->
-            <div v-if="item.jumlah_nominal || item.satuan_barang" class="grid grid-cols-2 gap-3">
-              <div v-if="item.jumlah_nominal">
-                <p class="text-xs text-gray-500">Nominal</p>
-                <p class="text-sm font-medium text-gray-900">
-                  Rp {{ Number(item.jumlah_nominal).toLocaleString('id-ID') }}
-                </p>
-              </div>
-              <div v-if="item.satuan_barang">
-                <p class="text-xs text-gray-500">Satuan</p>
-                <p class="text-sm font-medium text-gray-900">{{ item.satuan_barang }}</p>
-              </div>
+            <div class="bg-gray-50 p-2 sm:p-3 rounded-lg">
+              <p class="text-xs text-gray-500">Kategori</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-900">{{ item.kategori || '-' }}</p>
             </div>
+          </div>
 
-            <!-- Kuota & Sisa -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <p class="text-xs text-gray-500">Kuota</p>
-                <p class="text-sm font-medium text-gray-900">{{ item.kuota }}</p>
-              </div>
-              <div>
-                <p class="text-xs text-gray-500">Terpakai</p>
-                <p class="text-sm font-medium text-gray-900">{{ item.terpakai || 0 }}</p>
-              </div>
+          <!-- Nominal or Satuan -->
+          <div
+            v-if="item.jumlah_nominal || item.satuan_barang"
+            class="grid grid-cols-2 gap-2 sm:gap-3"
+          >
+            <div v-if="item.jumlah_nominal" class="bg-gray-50 p-2 sm:p-3 rounded-lg">
+              <p class="text-xs text-gray-500">Nominal</p>
+              <p class="text-xs sm:text-sm font-medium text-green-600 truncate">
+                {{ formatRupiah(item.jumlah_nominal) }}
+              </p>
+            </div>
+            <div v-if="item.satuan_barang" class="bg-gray-50 p-2 sm:p-3 rounded-lg">
+              <p class="text-xs text-gray-500">Satuan</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-900">{{ item.satuan_barang }}</p>
+            </div>
+          </div>
+
+          <!-- Kuota Info -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-gray-500">Kuota</span>
+              <span class="font-medium text-gray-900">{{ formatNumber(item.kuota) }}</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-gray-500">Terpakai</span>
+              <span class="font-medium text-gray-900">{{ formatNumber(item.terpakai || 0) }}</span>
             </div>
 
             <!-- Progress Bar -->
-            <div v-if="item.kuota && item.kuota > 0" class="pt-2">
+            <div v-if="item.kuota && item.kuota > 0" class="pt-1">
               <div class="flex justify-between text-xs text-gray-500 mb-1">
                 <span>Progress</span>
                 <span>{{ calculateProgress(item) }}%</span>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="w-full bg-gray-100 rounded-full h-1.5 sm:h-2">
                 <div
-                  class="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                  class="bg-primary-600 h-1.5 sm:h-2 rounded-full transition-all duration-300"
                   :style="{ width: `${calculateProgress(item)}%` }"
                 ></div>
               </div>
@@ -291,33 +251,43 @@
         </div>
 
         <!-- Actions -->
-        <div class="px-5 py-4 bg-gray-50 border-t border-gray-200">
+        <div class="px-4 sm:px-5 py-3 sm:py-4 bg-gray-50 border-t border-gray-100">
           <div class="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              class="flex-1"
+            <button
               @click="router.push(`/admin/daftar-bansos/${item.id}`)"
+              class="flex-1 flex items-center justify-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                 />
               </svg>
               Detail
-            </Button>
+            </button>
 
-            <Button variant="danger" size="sm" class="flex-1" @click="confirmDelete(item)">
-              <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button
+              @click="router.push(`/admin/daftar-bansos/${item.id}/edit`)"
+              class="flex-1 flex items-center justify-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+              Edit
+            </button>
+
+            <button
+              @click="confirmDelete(item)"
+              class="flex-1 flex items-center justify-center px-3 py-2 bg-white border border-red-300 rounded-lg text-xs sm:text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -326,41 +296,38 @@
                 />
               </svg>
               Hapus
-            </Button>
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Pagination -->
-    <div v-if="pagination && pagination.pages > 1" class="mt-8 flex items-center justify-between">
-      <div class="text-sm text-gray-700">
-        Menampilkan
-        <span class="font-medium">{{ (pagination.page - 1) * pagination.limit + 1 }}</span>
-        sampai
-        <span class="font-medium">{{
-          Math.min(pagination.page * pagination.limit, pagination.total)
-        }}</span>
-        dari
-        <span class="font-medium">{{ pagination.total }}</span> bansos
+    <div
+      v-if="pagination && pagination.pages > 1"
+      class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+    >
+      <div class="text-xs sm:text-sm text-gray-500 order-2 sm:order-1">
+        Menampilkan {{ (pagination.page - 1) * pagination.limit + 1 }} -
+        {{ Math.min(pagination.page * pagination.limit, pagination.total) }}
+        dari {{ pagination.total }} program
       </div>
-      <div class="flex space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          :disabled="pagination.page === 1"
+      <div class="flex items-center space-x-2 order-1 sm:order-2">
+        <button
           @click="changePage(pagination.page - 1)"
+          :disabled="pagination.page === 1"
+          class="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           Sebelumnya
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          :disabled="pagination.page === pagination.pages"
+        </button>
+        <span class="text-xs sm:text-sm text-gray-700 px-2">Hlm {{ pagination.page }}</span>
+        <button
           @click="changePage(pagination.page + 1)"
+          :disabled="pagination.page === pagination.pages"
+          class="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           Berikutnya
-        </Button>
+        </button>
       </div>
     </div>
   </div>
@@ -368,39 +335,80 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { bansosService } from '@/services/bansos'
 import { useRouter } from 'vue-router'
+import { bansosService } from '@/services/bansos'
 import Button from '@/components/ui/Button.vue'
+import Badge from '@/components/ui/Badge.vue'
+import { formatNumber, formatRupiah } from '@/utils/helpers'
+import { GiftIcon, CheckBadgeIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 
 const searchQuery = ref('')
+const filterStatus = ref('all')
 const bansosList = ref([])
 const pagination = ref(null)
 const loading = ref(true)
 
 // Computed properties
-const activeCount = computed(() => {
-  return bansosList.value.filter((b) => b.status === 'AKTIF').length
+const activeCount = computed(() => bansosList.value.filter((b) => b.status === 'AKTIF').length)
+const completedCount = computed(() => bansosList.value.filter((b) => b.status === 'SELESAI').length)
+const cancelledCount = computed(
+  () => bansosList.value.filter((b) => b.status === 'DIBATALKAN').length,
+)
+
+const filteredBansos = computed(() => {
+  let filtered = bansosList.value
+
+  // Filter by search
+  if (searchQuery.value) {
+    const keyword = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(
+      (item) =>
+        item.nama_bansos?.toLowerCase().includes(keyword) ||
+        item.kode_bansos?.toLowerCase().includes(keyword),
+    )
+  }
+
+  // Filter by status
+  if (filterStatus.value !== 'all') {
+    filtered = filtered.filter((item) => item.status === filterStatus.value)
+  }
+
+  return filtered
 })
 
-const ongoingCount = computed(() => {
-  return bansosList.value.filter((b) => b.status === 'SELESAI').length
-})
+// Helper functions
+const getStatusVariant = (status) => {
+  const variants = {
+    AKTIF: 'success',
+    SELESAI: 'info',
+    DIBATALKAN: 'danger',
+    DRAFT: 'warning',
+  }
+  return variants[status] || 'gray'
+}
 
-const inactiveCount = computed(() => {
-  return bansosList.value.filter((b) => b.status === 'DIBATALKAN').length
-})
+const getStatusText = (status) => {
+  const texts = {
+    AKTIF: 'Aktif',
+    SELESAI: 'Selesai',
+    DIBATALKAN: 'Dibatalkan',
+    DRAFT: 'Draft',
+  }
+  return texts[status] || status || '-'
+}
 
-onMounted(async () => {
-  await fetchBansosList()
-})
+const calculateProgress = (bansos) => {
+  if (!bansos.kuota || bansos.kuota === 0) return 0
+  const terpakai = bansos.terpakai || 0
+  return Math.min(Math.round((terpakai / bansos.kuota) * 100), 100)
+}
 
 const fetchBansosList = async () => {
   try {
     loading.value = true
     const res = await bansosService.getBansosList()
-
     bansosList.value = res.list || []
     pagination.value = res.pagination || null
   } catch (err) {
@@ -411,39 +419,14 @@ const fetchBansosList = async () => {
   }
 }
 
-const filteredBansos = computed(() => {
-  if (!searchQuery.value) {
-    return bansosList.value
-  }
-
-  const keyword = searchQuery.value.toLowerCase()
-
-  return bansosList.value.filter((item) => {
-    return (
-      item.nama_bansos?.toLowerCase().includes(keyword) ||
-      item.kode_bansos?.toLowerCase().includes(keyword)
-    )
-  })
-})
-
-const calculateProgress = (bansos) => {
-  if (!bansos.kuota || bansos.kuota === 0) return 0
-  const terpakai = bansos.terpakai || 0
-  return Math.min(Math.round((terpakai / bansos.kuota) * 100), 100)
-}
-
 const confirmDelete = async (bansos) => {
-  if (!confirm(`Yakin ingin menghapus bansos "${bansos.nama_bansos}" (${bansos.kode_bansos})?`)) {
+  if (!confirm(`Yakin ingin menghapus ${bansos.nama_bansos}?`)) {
     return
   }
 
   try {
     await bansosService.deleteBansos(bansos.id)
-
-    // Remove from local list
     bansosList.value = bansosList.value.filter((b) => b.id !== bansos.id)
-
-    // Show success message
     alert('Bansos berhasil dihapus')
   } catch (err) {
     console.error('Error deleting bansos:', err)
@@ -451,15 +434,13 @@ const confirmDelete = async (bansos) => {
   }
 }
 
-const changePage = async (page) => {
-  if (page < 1 || page > pagination.value.pages) {
-    return
-  }
-
+const changePage = (page) => {
+  if (page < 1 || page > pagination.value.pages) return
   // In a real app, fetch the new page from API
   console.log('Change to page:', page)
-  // For now, we'll just log it
 }
+
+onMounted(fetchBansosList)
 </script>
 
 <style scoped>
@@ -482,7 +463,6 @@ const changePage = async (page) => {
   transition: box-shadow 0.2s ease-in-out;
 }
 
-/* Progress bar animation */
 .transition-all {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

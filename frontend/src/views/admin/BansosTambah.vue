@@ -763,7 +763,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { wilayahService } from '@/services/wilayah'
+import { dusunService } from '@/services/dusun'
 import { bansosService } from '@/services/bansos'
 
 const router = useRouter()
@@ -841,8 +841,8 @@ onMounted(async () => {
 const fetchDusunData = async () => {
   try {
     loadingDusun.value = true
-    const response = await wilayahService.getDusun()
-    dusunList.value = response
+    const response = await dusunService.getDusunList()
+    dusunList.value = response.data
   } catch (error) {
     console.error('Error mengambil data dusun:', error)
   } finally {

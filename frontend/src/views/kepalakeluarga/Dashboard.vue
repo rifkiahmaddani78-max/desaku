@@ -1,643 +1,462 @@
 <template>
-  <div>
-    <!-- Page Header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-semibold text-gray-900 mb-2">Dashboard Kepala Keluarga</h1>
-      <p class="text-sm text-gray-600">
-        Selamat datang kembali, {{ user?.nama_lengkap || 'Kepala Keluarga' }}!
-      </p>
-    </div>
-
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <!-- Total Anggota Keluarga -->
-      <Card class="hover-lift transition-all duration-200">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="p-3 bg-blue-100 rounded-lg">
-                <svg
-                  class="h-6 w-6 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5 0c-.76.554-1.645.897-2.59.897H17m-7 0a6 6 0 016-6v0a6 6 0 016 6v0"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-5 flex-1">
-              <dt class="text-sm font-medium text-gray-500 truncate">Total Anggota Keluarga</dt>
-              <dd class="text-2xl font-semibold text-gray-900">
-                {{ stats.totalAnggotaKeluarga || 0 }}
-              </dd>
-            </div>
-          </div>
-          <div class="mt-4">
-            <div class="flex items-center text-sm text-gray-500">
-              <svg
-                class="flex-shrink-0 mr-1.5 h-4 w-4 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                />
-              </svg>
-              Data keluarga Anda
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      <!-- Status Bansos -->
-      <Card class="hover-lift transition-all duration-200">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="p-3 bg-green-100 rounded-lg">
-                <svg
-                  class="h-6 w-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-5 flex-1">
-              <dt class="text-sm font-medium text-gray-500 truncate">Status Bansos</dt>
-              <dd class="text-2xl font-semibold text-gray-900">
-                {{ stats.totalBansos || 0 }}
-              </dd>
-            </div>
-          </div>
-          <div class="mt-4">
-            <Badge
-              :variant="
-                stats.bansosStatus === 'disetujui'
-                  ? 'success'
-                  : stats.bansosStatus === 'ditolak'
-                    ? 'danger'
-                    : 'warning'
-              "
-            >
-              {{ getBansosStatusText(stats.bansosStatus) }}
-            </Badge>
-          </div>
-        </div>
-      </Card>
-
-      <!-- Pengaduan Aktif -->
-      <Card class="hover-lift transition-all duration-200">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="p-3 bg-yellow-100 rounded-lg">
-                <svg
-                  class="h-6 w-6 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-5 flex-1">
-              <dt class="text-sm font-medium text-gray-500 truncate">Pengaduan Aktif</dt>
-              <dd class="text-2xl font-semibold text-gray-900">
-                {{ stats.totalPengaduan || 0 }}
-              </dd>
-            </div>
-          </div>
-          <div class="mt-4">
-            <div class="flex items-center text-sm text-gray-500">
-              <svg
-                class="flex-shrink-0 mr-1.5 h-4 w-4 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              {{ stats.pengaduanTerbaru || 'Tidak ada' }}
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      <!-- Verifikasi Status -->
-      <Card class="hover-lift transition-all duration-200">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="p-3 bg-purple-100 rounded-lg">
-                <svg
-                  class="h-6 w-6 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-5 flex-1">
-              <dt class="text-sm font-medium text-gray-500 truncate">Status Verifikasi</dt>
-              <dd class="text-2xl font-semibold text-gray-900">
-                {{ user?.is_verified ? 'Aktif' : 'Pending' }}
-              </dd>
-            </div>
-          </div>
-          <div class="mt-4">
-            <Badge :variant="user?.is_verified ? 'success' : 'warning'">
-              {{ user?.is_verified ? 'Terverifikasi' : 'Menunggu Verifikasi' }}
-            </Badge>
-          </div>
-        </div>
-      </Card>
-    </div>
-
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Left Column -->
-      <div class="lg:col-span-2 space-y-8">
-        <!-- Welcome Message -->
-        <Card title="Selamat Datang di Desa Ku" :padding="'lg'">
-          <div class="space-y-4">
-            <div class="flex items-center space-x-4">
-              <div class="h-12 w-12 rounded-full bg-primary-100 flex items-center justify-center">
-                <span class="text-primary-700 font-bold text-lg">
-                  {{ getInitials(user?.nama_lengkap) }}
-                </span>
-              </div>
-              <div>
-                <h3 class="text-lg font-medium text-gray-900">{{ user?.nama_lengkap }}</h3>
-                <p class="text-sm text-gray-500">Kepala Keluarga • NIK: {{ user?.nik }}</p>
-              </div>
-            </div>
-
-            <div class="bg-green-50 border border-green-100 rounded-lg p-4">
-              <div class="flex">
-                <div class="flex-shrink-0">
-                  <svg
-                    class="h-5 w-5 text-green-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                    />
-                  </svg>
-                </div>
-                <div class="ml-3">
-                  <h3 class="text-sm font-medium text-green-800">
-                    Akses Penuh sebagai Kepala Keluarga
-                  </h3>
-                  <div class="mt-2 text-sm text-green-700 space-y-1">
-                    <p>• Kelola data anggota keluarga</p>
-                    <p>• Ajukan bantuan sosial (Bansos)</p>
-                    <p>• Buat pengaduan dan permohonan</p>
-                    <p>• Pantau status verifikasi</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 pt-4">
-              <div class="text-center p-4 bg-gray-50 rounded-lg">
-                <p class="text-sm text-gray-600">Terakhir Login</p>
-                <p class="text-lg font-semibold text-gray-900">
-                  {{ formatLastLogin(user?.last_login) }}
-                </p>
-              </div>
-              <div class="text-center p-4 bg-gray-50 rounded-lg">
-                <p class="text-sm text-gray-600">Akun Dibuat</p>
-                <p class="text-lg font-semibold text-gray-900">
-                  {{ formatDate(user?.created_at) }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <!-- Quick Actions -->
-        <Card title="Aksi Cepat" subtitle="Tindakan yang sering Anda butuhkan">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button
-              variant="primary"
-              fullWidth
-              class="justify-start h-14"
-              @click="router.push('/kepala-keluarga/anggota-keluarga')"
-            >
-              <div class="flex items-center">
-                <div class="p-2 bg-blue-100 rounded-lg mr-3">
-                  <svg
-                    class="h-5 w-5 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5 0c-.76.554-1.645.897-2.59.897H17m-7 0a6 6 0 016-6v0a6 6 0 016 6v0"
-                    />
-                  </svg>
-                </div>
-                <div class="text-left">
-                  <p class="font-medium">Kelola Anggota Keluarga</p>
-                  <p class="text-xs text-gray-500">Tambah atau edit data anggota</p>
-                </div>
-              </div>
-            </Button>
-
-            <Button
-              variant="success"
-              fullWidth
-              class="justify-start h-14"
-              @click="router.push('/kepala-keluarga/bansos/ajukan')"
-            >
-              <div class="flex items-center">
-                <div class="p-2 bg-green-100 rounded-lg mr-3">
-                  <svg
-                    class="h-5 w-5 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <div class="text-left">
-                  <p class="font-medium">Ajukan Bansos</p>
-                  <p class="text-xs text-gray-500">Pengajuan bantuan sosial</p>
-                </div>
-              </div>
-            </Button>
-
-            <Button
-              variant="warning"
-              fullWidth
-              class="justify-start h-14"
-              @click="router.push('/kepala-keluarga/pengaduan/baru')"
-            >
-              <div class="flex items-center">
-                <div class="p-2 bg-yellow-100 rounded-lg mr-3">
-                  <svg
-                    class="h-5 w-5 text-yellow-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"
-                    />
-                  </svg>
-                </div>
-                <div class="text-left">
-                  <p class="font-medium">Buat Pengaduan</p>
-                  <p class="text-xs text-gray-500">Laporkan masalah atau keluhan</p>
-                </div>
-              </div>
-            </Button>
-
-            <Button
-              variant="outline"
-              fullWidth
-              class="justify-start h-14"
-              @click="router.push('/kepala-keluarga/profil')"
-            >
-              <div class="flex items-center">
-                <div class="p-2 bg-gray-100 rounded-lg mr-3">
-                  <svg
-                    class="h-5 w-5 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-                <div class="text-left">
-                  <p class="font-medium">Profil Saya</p>
-                  <p class="text-xs text-gray-500">Lihat dan edit data pribadi</p>
-                </div>
-              </div>
-            </Button>
-          </div>
-        </Card>
-
-        <!-- Recent Activities -->
-        <Card title="Aktivitas Terbaru" subtitle="Riwayat kegiatan Anda">
-          <div class="space-y-4">
-            <div v-if="activities.length === 0" class="text-center py-8">
-              <svg
-                class="mx-auto h-12 w-12 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                />
-              </svg>
-              <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada aktivitas</h3>
-              <p class="mt-1 text-sm text-gray-500">Mulai gunakan layanan Desa Ku</p>
-            </div>
-
-            <div v-else>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header with Welcome Section -->
+    <div class="bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Avatar -->
+            <div class="relative">
               <div
-                v-for="activity in activities"
-                :key="activity.id"
-                class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-150"
+                class="w-16 h-16 rounded-full bg-white/20 backdrop-blur flex items-center justify-center ring-4 ring-white/30"
               >
-                <div
-                  :class="[
-                    'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
-                    activity.type === 'success'
-                      ? 'bg-green-100 text-green-600'
-                      : activity.type === 'warning'
-                        ? 'bg-yellow-100 text-yellow-600'
-                        : activity.type === 'error'
-                          ? 'bg-red-100 text-red-600'
-                          : 'bg-blue-100 text-blue-600',
-                  ]"
-                >
-                  <component :is="activity.icon" class="h-4 w-4" />
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900">{{ activity.title }}</p>
-                  <p class="text-xs text-gray-500 mt-1">{{ activity.description }}</p>
-                  <p class="text-xs text-gray-400 mt-1">{{ activity.time }}</p>
-                </div>
-                <Badge v-if="activity.status" :variant="getBadgeVariant(activity.status)" size="sm">
-                  {{ activity.status }}
-                </Badge>
+                <span v-if="!profile.foto_profil" class="text-2xl font-bold text-white">
+                  {{ getInitials(profile.nama_lengkap) }}
+                </span>
+                <img
+                  v-else
+                  :src="profile.foto_profil"
+                  :alt="profile.nama_lengkap"
+                  class="w-full h-full rounded-full object-cover"
+                />
               </div>
+              <div
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 border-2 border-white rounded-full"
+              ></div>
+            </div>
+
+            <!-- Welcome Text -->
+            <div>
+              <h1 class="text-2xl font-bold">Selamat Datang, {{ profile.nama_lengkap }}!</h1>
+              <p class="text-primary-100 mt-1 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                {{ profile.nama_dusun }} • RW {{ profile.nomor_rw }} / RT {{ profile.nomor_rt }}
+              </p>
             </div>
           </div>
 
-          <div class="mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              fullWidth
-              @click="router.push('/kepala-keluarga/aktivitas')"
-            >
-              Lihat Semua Aktivitas
-            </Button>
+          <!-- Quick Stats -->
+          <div class="mt-4 md:mt-0 flex flex-wrap gap-4">
+            <div class="bg-white/10 backdrop-blur rounded-lg px-4 py-2">
+              <p class="text-xs text-primary-200">NIK</p>
+              <p class="text-sm font-semibold">{{ profile.nik }}</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-lg px-4 py-2">
+              <p class="text-xs text-primary-200">Terakhir Login</p>
+              <p class="text-sm font-semibold">{{ formatDate(profile.last_login, 'short') }}</p>
+            </div>
           </div>
-        </Card>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Stats Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <!-- Total Anggota Keluarga -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Anggota Keluarga</p>
+              <p class="text-2xl font-bold text-gray-900">{{ anggotaKeluarga.length }}</p>
+              <p class="text-xs text-gray-400 mt-1">
+                Kepala Keluarga + {{ anggotaKeluarga.length - 1 }}
+              </p>
+            </div>
+            <div class="p-3 bg-blue-50 rounded-lg">
+              <UsersIcon class="w-6 h-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Bansos Aktif -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Bansos Aktif</p>
+              <p class="text-2xl font-bold text-gray-900">{{ bansosAktif.length }}</p>
+              <p class="text-xs text-gray-400 mt-1">Program tersedia</p>
+            </div>
+            <div class="p-3 bg-green-50 rounded-lg">
+              <GiftIcon class="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Pengajuan -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Total Pengajuan</p>
+              <p class="text-2xl font-bold text-gray-900">{{ pengajuanList.length }}</p>
+              <p class="text-xs text-gray-400 mt-1">Semua waktu</p>
+            </div>
+            <div class="p-3 bg-purple-50 rounded-lg">
+              <DocumentTextIcon class="w-6 h-6 text-purple-600" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Pengajuan Diterima -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Pengajuan Diterima</p>
+              <p class="text-2xl font-bold text-gray-900">{{ pengajuanDiterima }}</p>
+              <p class="text-xs text-green-600 mt-1">
+                {{ ((pengajuanDiterima / pengajuanList.length) * 100 || 0).toFixed(0) }}% success
+                rate
+              </p>
+            </div>
+            <div class="p-3 bg-green-50 rounded-lg">
+              <CheckBadgeIcon class="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Right Column -->
-      <div class="space-y-8">
-        <!-- Status Bansos Detail -->
-        <Card title="Detail Bansos" subtitle="Status pengajuan Anda">
-          <div v-if="stats.bansosDetail" class="space-y-4">
-            <div class="space-y-3">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700">Status Terakhir:</span>
-                <Badge
-                  :variant="
-                    stats.bansosDetail.status === 'disetujui'
-                      ? 'success'
-                      : stats.bansosDetail.status === 'ditolak'
-                        ? 'danger'
-                        : 'warning'
-                  "
-                >
-                  {{ getBansosStatusText(stats.bansosDetail.status) }}
-                </Badge>
-              </div>
-
-              <div v-if="stats.bansosDetail.nama_program" class="space-y-2">
-                <p class="text-sm text-gray-600">
-                  Program:
-                  <span class="font-medium text-gray-900">{{
-                    stats.bansosDetail.nama_program
-                  }}</span>
-                </p>
-                <p class="text-sm text-gray-600">
-                  Nominal:
-                  <span class="font-medium text-gray-900">{{
-                    formatCurrency(stats.bansosDetail.nominal)
-                  }}</span>
-                </p>
-                <p class="text-sm text-gray-600">
-                  Periode:
-                  <span class="font-medium text-gray-900">{{ stats.bansosDetail.periode }}</span>
-                </p>
-              </div>
-
-              <div v-if="stats.bansosDetail.catatan" class="p-3 bg-blue-50 rounded-lg">
-                <p class="text-xs text-blue-700">{{ stats.bansosDetail.catatan }}</p>
-              </div>
+      <!-- Main Grid - 2 Columns -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column - 2/3 width -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Pengajuan Terbaru Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 class="text-lg font-semibold text-gray-900">Pengajuan Terbaru</h2>
+              <router-link
+                to="/pengajuan-bansos-saya"
+                class="text-sm text-primary-600 hover:text-primary-700 flex items-center"
+              >
+                Lihat Semua
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </router-link>
             </div>
 
-            <Button
-              @click="router.push('/kepala-keluarga/bansos')"
-              variant="primary"
-              fullWidth
-              size="sm"
-            >
-              Lihat Detail Lengkap
-            </Button>
-          </div>
-          <div v-else class="text-center py-8">
-            <svg
-              class="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada pengajuan bansos</h3>
-            <p class="mt-1 text-sm text-gray-500">Mulai ajukan bansos untuk mendapatkan bantuan.</p>
-            <div class="mt-4">
-              <Button @click="router.push('/kepala-keluarga/bansos/ajukan')" size="sm">
-                Ajukan Bansos
-              </Button>
-            </div>
-          </div>
-        </Card>
-
-        <!-- Notifikasi -->
-        <Card title="Notifikasi" subtitle="Pemberitahuan penting">
-          <div class="space-y-3">
-            <div v-if="notifications.length === 0" class="text-center py-4">
-              <p class="text-sm text-gray-500">Tidak ada notifikasi baru</p>
-            </div>
-
-            <div v-else>
+            <div class="divide-y divide-gray-100">
               <div
-                v-for="notification in notifications.slice(0, 3)"
-                :key="notification.id"
-                class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-150"
+                v-for="item in pengajuanTerbaru"
+                :key="item.id"
+                class="p-4 hover:bg-gray-50 transition-colors"
+              >
+                <div class="flex items-start justify-between">
+                  <div class="flex items-start space-x-3">
+                    <!-- Avatar Bansos -->
+                    <div class="flex-shrink-0">
+                      <div
+                        :class="[
+                          'w-10 h-10 rounded-lg flex items-center justify-center',
+                          item.jenis_bansos === 'TUNAI'
+                            ? 'bg-green-100'
+                            : item.jenis_bansos === 'BARANG'
+                              ? 'bg-purple-100'
+                              : 'bg-blue-100',
+                        ]"
+                      >
+                        <span
+                          class="text-sm font-bold"
+                          :class="[
+                            item.jenis_bansos === 'TUNAI'
+                              ? 'text-green-600'
+                              : item.jenis_bansos === 'BARANG'
+                                ? 'text-purple-600'
+                                : 'text-blue-600',
+                          ]"
+                        >
+                          {{ getInitials(item.nama_bansos) }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-2">
+                        <h3 class="text-sm font-semibold text-gray-900">{{ item.nama_bansos }}</h3>
+                        <Badge :variant="getStatusVariant(item.status)" size="sm">
+                          {{ getStatusText(item.status) }}
+                        </Badge>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">{{ item.kode_bansos }}</p>
+                      <p class="text-xs text-gray-600 mt-2 line-clamp-2">
+                        {{ item.alasan_pengajuan }}
+                      </p>
+                      <div class="flex items-center mt-2 text-xs text-gray-400">
+                        <svg
+                          class="w-3 h-3 mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        {{ formatDate(item.created_at) }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Nominal jika TUNAI -->
+                  <div v-if="item.jenis_bansos === 'TUNAI'" class="text-right">
+                    <p class="text-sm font-semibold text-green-600">
+                      Rp {{ formatRupiah(item.jumlah_nominal) }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Anggota Keluarga Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 class="text-lg font-semibold text-gray-900">Anggota Keluarga</h2>
+              <span class="text-sm text-gray-500">{{ anggotaKeluarga.length }} orang</span>
+            </div>
+
+            <div class="p-4">
+              <!-- Kepala Keluarga (highlight) -->
+              <div class="bg-primary-50 rounded-lg p-4 mb-3 border border-primary-100">
+                <div class="flex items-center">
+                  <div
+                    class="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-lg"
+                  >
+                    {{ getInitials(profile.nama_lengkap) }}
+                  </div>
+                  <div class="ml-4 flex-1">
+                    <div class="flex items-center">
+                      <h3 class="font-semibold text-gray-900">{{ profile.nama_lengkap }}</h3>
+                      <Badge variant="primary" size="sm" class="ml-2">Kepala Keluarga</Badge>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">NIK: {{ profile.nik }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Anggota Lainnya -->
+              <div
+                v-for="anggota in anggotaLainnya"
+                :key="anggota.id"
+                class="flex items-center py-3 border-b border-gray-100 last:border-0"
               >
                 <div
-                  :class="[
-                    'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center',
-                    notification.read
-                      ? 'bg-gray-200 text-gray-600'
-                      : 'bg-primary-100 text-primary-600',
-                  ]"
+                  class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-semibold"
                 >
-                  <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fill-rule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
+                  {{ getInitials(anggota.nama_lengkap) }}
                 </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900">{{ notification.title }}</p>
-                  <p class="text-xs text-gray-500 mt-1">{{ notification.message }}</p>
-                  <p class="text-xs text-gray-400 mt-1">{{ notification.time }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              fullWidth
-              @click="router.push('/kepala-keluarga/notifikasi')"
-            >
-              Lihat Semua Notifikasi
-            </Button>
-          </div>
-        </Card>
-
-        <!-- Info Penting -->
-        <Card title="Info Penting" subtitle="Pengumuman dari desa">
-          <div class="space-y-4">
-            <div class="p-3 bg-yellow-50 border border-yellow-100 rounded-lg">
-              <div class="flex">
-                <div class="flex-shrink-0">
-                  <svg
-                    class="h-5 w-5 text-yellow-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <div class="ml-3">
-                  <h3 class="text-sm font-medium text-yellow-800">Periode Bansos</h3>
-                  <div class="mt-2 text-sm text-yellow-700">
-                    <p>Pengajuan bansos periode Januari-Maret 2024 dibuka hingga 31 Maret 2024.</p>
+                <div class="ml-3 flex-1">
+                  <div class="flex items-center">
+                    <h4 class="text-sm font-medium text-gray-900">{{ anggota.nama_lengkap }}</h4>
+                    <Badge :variant="getHubunganVariant(anggota.hubungan)" size="sm" class="ml-2">
+                      {{ formatHubungan(anggota.hubungan) }}
+                    </Badge>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="p-3 bg-blue-50 border border-blue-100 rounded-lg">
-              <div class="flex">
-                <div class="flex-shrink-0">
-                  <svg
-                    class="h-5 w-5 text-blue-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <div class="ml-3">
-                  <h3 class="text-sm font-medium text-blue-800">Verifikasi Data</h3>
-                  <div class="mt-2 text-sm text-blue-700">
-                    <p>Pastikan data keluarga Anda sudah lengkap dan terverifikasi.</p>
+                  <div class="flex items-center mt-1 text-xs text-gray-500">
+                    <span>{{ anggota.nik }}</span>
+                    <span class="mx-2">•</span>
+                    <span>{{ calculateAge(anggota.tanggal_lahir) }}</span>
+                    <span class="mx-2">•</span>
+                    <Badge
+                      :variant="anggota.status_tinggal === 'TINGGAL' ? 'success' : 'warning'"
+                      size="sm"
+                    >
+                      {{ formatStatusTinggal(anggota.status_tinggal) }}
+                    </Badge>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              fullWidth
-              @click="router.push('/kepala-keluarga/info')"
-            >
-              Lihat Semua Pengumuman
-            </Button>
+        <!-- Right Column - 1/3 width -->
+        <div class="space-y-6">
+          <!-- Profile Info Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <h2 class="text-lg font-semibold text-gray-900">Informasi Pribadi</h2>
+            </div>
+            <div class="p-4">
+              <div class="space-y-3">
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="text-sm text-gray-500">NIK</span>
+                  <span class="text-sm font-medium text-gray-900">{{ profile.nik }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="text-sm text-gray-500">Email</span>
+                  <span class="text-sm font-medium text-gray-900">{{ profile.email || '-' }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="text-sm text-gray-500">Telepon</span>
+                  <span class="text-sm font-medium text-gray-900">{{
+                    profile.telepon || '-'
+                  }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="text-sm text-gray-500">Tempat/Tgl Lahir</span>
+                  <span class="text-sm font-medium text-gray-900"
+                    >{{ profile.tempat_lahir || '-' }},
+                    {{ formatDate(profile.tanggal_lahir) }}</span
+                  >
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="text-sm text-gray-500">Agama</span>
+                  <span class="text-sm font-medium text-gray-900">{{
+                    formatAgama(profile.agama)
+                  }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                  <span class="text-sm text-gray-500">Pekerjaan</span>
+                  <span class="text-sm font-medium text-gray-900">{{
+                    profile.pekerjaan || '-'
+                  }}</span>
+                </div>
+                <div class="flex justify-between py-2">
+                  <span class="text-sm text-gray-500">Status Kawin</span>
+                  <span class="text-sm font-medium text-gray-900">{{
+                    formatStatusKawin(profile.status_perkawinan)
+                  }}</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </Card>
+
+          <!-- Bansos Aktif Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <h2 class="text-lg font-semibold text-gray-900">Bansos Aktif</h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <div
+                v-for="bansos in bansosAktif"
+                :key="bansos.id"
+                class="p-4 hover:bg-gray-50 transition-colors"
+              >
+                <div class="flex items-start">
+                  <div
+                    :class="[
+                      'flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center',
+                      bansos.jenis_bansos === 'TUNAI'
+                        ? 'bg-green-100'
+                        : bansos.jenis_bansos === 'BARANG'
+                          ? 'bg-purple-100'
+                          : 'bg-blue-100',
+                    ]"
+                  >
+                    <span
+                      :class="[
+                        'text-sm font-bold',
+                        bansos.jenis_bansos === 'TUNAI'
+                          ? 'text-green-600'
+                          : bansos.jenis_bansos === 'BARANG'
+                            ? 'text-purple-600'
+                            : 'text-blue-600',
+                      ]"
+                    >
+                      {{ getInitials(bansos.nama_bansos) }}
+                    </span>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <h3 class="text-sm font-semibold text-gray-900">{{ bansos.nama_bansos }}</h3>
+                    <p class="text-xs text-gray-500 mt-1">{{ bansos.kode_bansos }}</p>
+                    <div class="flex items-center mt-2 text-xs">
+                      <Badge
+                        :variant="bansos.prioritas === 'TINGGI' ? 'danger' : 'warning'"
+                        size="sm"
+                      >
+                        {{ bansos.prioritas }}
+                      </Badge>
+                      <span class="mx-2 text-gray-300">|</span>
+                      <span class="text-gray-500">Kuota: {{ bansos.kuota }}</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">
+                      {{ formatDate(bansos.tanggal_mulai) }} -
+                      {{ formatDate(bansos.tanggal_selesai) }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <h2 class="text-lg font-semibold text-gray-900">Aksi Cepat</h2>
+            </div>
+            <div class="p-4 space-y-3">
+              <router-link
+                to="/daftar-bansos"
+                class="flex items-center p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors"
+              >
+                <div class="p-2 bg-primary-600 rounded-lg">
+                  <GiftIcon class="w-5 h-5 text-white" />
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-semibold text-gray-900">Ajukan Bansos</p>
+                  <p class="text-xs text-gray-500">Lihat bansos tersedia</p>
+                </div>
+              </router-link>
+
+              <router-link
+                to="/pengajuan-bansos-saya"
+                class="flex items-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+              >
+                <div class="p-2 bg-purple-600 rounded-lg">
+                  <DocumentTextIcon class="w-5 h-5 text-white" />
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-semibold text-gray-900">Riwayat Pengajuan</p>
+                  <p class="text-xs text-gray-500">Cek status pengajuan</p>
+                </div>
+              </router-link>
+
+              <router-link
+                to="/profile"
+                class="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+              >
+                <div class="p-2 bg-green-600 rounded-lg">
+                  <UserIcon class="w-5 h-5 text-white" />
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-semibold text-gray-900">Edit Profil</p>
+                  <p class="text-xs text-gray-500">Perbarui data diri</p>
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -647,112 +466,138 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import Card from '@/components/ui/Card.vue'
-import Button from '@/components/ui/Button.vue'
+import { profileService } from '@/services/profile'
+import { anggotaKeluargaService } from '@/services/anggotaKeluarga'
+import { bansosService } from '@/services/bansos'
+import { pengajuanService } from '@/services/pengajuan'
 import Badge from '@/components/ui/Badge.vue'
-import { getInitials, formatDate, formatCurrency } from '@/utils/helpers'
-
-// Icons for activities
 import {
-  CheckCircleIcon,
-  XCircleIcon,
-  ClockIcon,
+  UsersIcon,
+  GiftIcon,
   DocumentTextIcon,
-  CurrencyDollarIcon,
-  ExclamationTriangleIcon,
+  CheckBadgeIcon,
+  UserIcon,
 } from '@heroicons/vue/24/outline'
+import { getInitials, formatDate, calculateAge, formatRupiah } from '@/utils/helpers'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 // State
 const loading = ref(true)
-const stats = ref({
-  totalAnggotaKeluarga: 0,
-  totalBansos: 0,
-  bansosStatus: 'pending',
-  bansosDetail: null,
-  totalPengaduan: 0,
-  pengaduanTerbaru: '',
-})
-
-// Mock data (in production, fetch from API)
-const activities = ref([
-  {
-    id: 1,
-    title: 'Pengajuan Bansos',
-    description: 'Pengajuan bansos bulan Januari telah diajukan',
-    type: 'info',
-    icon: ClockIcon,
-    time: '2 hari lalu',
-    status: 'diproses',
-  },
-  {
-    id: 2,
-    title: 'Verifikasi Data',
-    description: 'Data keluarga telah diverifikasi oleh admin',
-    type: 'success',
-    icon: CheckCircleIcon,
-    time: '1 minggu lalu',
-    status: 'selesai',
-  },
-  {
-    id: 3,
-    title: 'Pengaduan',
-    description: 'Pengaduan mengenai fasilitas umum dibuat',
-    type: 'warning',
-    icon: ExclamationTriangleIcon,
-    time: '2 minggu lalu',
-    status: 'ditanggapi',
-  },
-])
-
-const notifications = ref([
-  {
-    id: 1,
-    title: 'Pengingat Bansos',
-    message: 'Periode pengajuan bansos akan segera berakhir',
-    time: '1 jam lalu',
-    read: false,
-  },
-  {
-    id: 2,
-    title: 'Verifikasi Berhasil',
-    message: 'Data keluarga Anda telah diverifikasi',
-    time: '2 hari lalu',
-    read: true,
-  },
-])
+const profile = ref({})
+const anggotaKeluarga = ref([])
+const bansosAktif = ref([])
+const pengajuanList = ref([])
 
 // Computed
-const user = computed(() => authStore.user)
-
-onMounted(async () => {
-  await fetchDashboardData()
+const anggotaLainnya = computed(() => {
+  return anggotaKeluarga.value.filter((a) => a.hubungan !== 'KEPALA_KELUARGA')
 })
 
-const fetchDashboardData = async () => {
+const pengajuanDiterima = computed(() => {
+  return pengajuanList.value.filter((p) => p.status === 'DITERIMA').length
+})
+
+const pengajuanTerbaru = computed(() => {
+  return pengajuanList.value
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 3)
+})
+
+// Helper functions
+const formatHubungan = (hubungan) => {
+  const map = {
+    ISTRI: 'Istri',
+    ANAK: 'Anak',
+    SUAMI: 'Suami',
+    CUCU: 'Cucu',
+    ORANG_TUA: 'Orang Tua',
+    MENANTU: 'Menantu',
+    FAMILI_LAIN: 'Famili Lain',
+  }
+  return map[hubungan] || hubungan
+}
+
+const formatStatusTinggal = (status) => {
+  return status === 'TINGGAL' ? 'Tinggal' : 'Tidak Tinggal'
+}
+
+const formatAgama = (agama) => {
+  const map = {
+    ISLAM: 'Islam',
+    KRISTEN: 'Kristen',
+    KATOLIK: 'Katolik',
+    HINDU: 'Hindu',
+    BUDDHA: 'Buddha',
+    KONGHUCU: 'Konghucu',
+  }
+  return map[agama] || agama
+}
+
+const formatStatusKawin = (status) => {
+  const map = {
+    BELUM_KAWIN: 'Belum Kawin',
+    KAWIN: 'Kawin',
+    CERAI_HIDUP: 'Cerai Hidup',
+    CERAI_MATI: 'Cerai Mati',
+  }
+  return map[status] || status
+}
+
+const getHubunganVariant = (hubungan) => {
+  const map = {
+    ISTRI: 'warning',
+    ANAK: 'info',
+    SUAMI: 'primary',
+    CUCU: 'success',
+    ORANG_TUA: 'danger',
+  }
+  return map[hubungan] || 'gray'
+}
+
+const getStatusVariant = (status) => {
+  const map = {
+    MENUNGGU: 'warning',
+    DIPROSES: 'info',
+    DITERIMA: 'success',
+    DITOLAK: 'danger',
+  }
+  return map[status] || 'gray'
+}
+
+const getStatusText = (status) => {
+  const map = {
+    MENUNGGU: 'Menunggu',
+    DIPROSES: 'Diproses',
+    DITERIMA: 'Diterima',
+    DITOLAK: 'Ditolak',
+  }
+  return map[status] || status
+}
+
+// Fetch all data
+const fetchData = async () => {
+  loading.value = true
+
   try {
-    loading.value = true
+    // Fetch all data in parallel
+    const [profileRes, anggotaRes, bansosRes, pengajuanRes] = await Promise.all([
+      profileService.getProfile(),
+      anggotaKeluargaService.getAnggotaKeluargaList(),
+      bansosService.getBansosActive(),
+      pengajuanService.getMyPengajuan(),
+    ])
 
-    // In production, fetch from API
-    // For now, use mock data
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    stats.value = {
-      totalAnggotaKeluarga: 4,
-      totalBansos: 1,
-      bansosStatus: 'diproses',
-      bansosDetail: {
-        nama_program: 'Bantuan Langsung Tunai (BLT)',
-        nominal: 600000,
-        periode: 'Januari 2024',
-        status: 'diproses',
-        catatan: 'Sedang dalam proses verifikasi oleh admin desa',
-      },
-      totalPengaduan: 2,
-      pengaduanTerbaru: '1 minggu lalu',
+    if (profileRes.success) {
+      profile.value = profileRes.data
     }
+
+    anggotaKeluarga.value = anggotaRes || []
+
+    bansosAktif.value = bansosRes || []
+
+    pengajuanList.value = pengajuanRes || []
   } catch (error) {
     console.error('Error fetching dashboard data:', error)
   } finally {
@@ -760,55 +605,41 @@ const fetchDashboardData = async () => {
   }
 }
 
-const getBansosStatusText = (status) => {
-  const statusMap = {
-    disetujui: 'Disetujui',
-    ditolak: 'Ditolak',
-    diproses: 'Dalam Proses',
-    pending: 'Menunggu',
-  }
-  return statusMap[status] || status
-}
-
-const getBadgeVariant = (status) => {
-  const variantMap = {
-    selesai: 'success',
-    diproses: 'warning',
-    ditanggapi: 'info',
-    ditolak: 'danger',
-  }
-  return variantMap[status] || 'info'
-}
-
-const formatLastLogin = (dateString) => {
-  if (!dateString) return 'Belum pernah login'
-
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now - date
-  const diffMins = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMins / 60)
-  const diffDays = Math.floor(diffHours / 24)
-
-  if (diffMins < 60) return `${diffMins} menit lalu`
-  if (diffHours < 24) return `${diffHours} jam lalu`
-  if (diffDays < 7) return `${diffDays} hari lalu`
-
-  return formatDate(dateString)
-}
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style scoped>
-.hover-lift {
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+/* Smooth transitions */
+.hover\:shadow-md {
+  transition: box-shadow 0.2s ease;
 }
 
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+/* Line clamp for text */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 </style>
